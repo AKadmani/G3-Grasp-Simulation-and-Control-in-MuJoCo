@@ -3,7 +3,7 @@ import mujoco.viewer
 import numpy as np
 import time
 
-model = mujoco.MjModel.from_xml_path("/home/tim/Documents/project/wonik_allegro/scene_left.xml")
+model = mujoco.MjModel.from_xml_path("/home/tim/Documents/project/G3-Grasp-Simulation-and-Control-in-MuJoCo/wonik_allegro/scene_left.xml")
 data = mujoco.MjData(model)
 
 
