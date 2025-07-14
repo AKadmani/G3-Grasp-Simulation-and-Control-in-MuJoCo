@@ -1,0 +1,97 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-8eef21faccebd5fb93c1.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "grasp_simulation",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "grasp_controller::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-grasp_controller-a40b16aefd3bf0dce012.json",
+					"name" : "grasp_controller",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "grasp_simulation_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-grasp_simulation_uninstall-6421b03980d79a33fe55.json",
+					"name" : "grasp_simulation_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "minimal_test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-minimal_test-058151edbe46fb3b766b.json",
+					"name" : "minimal_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "mujoco_visualizer::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-mujoco_visualizer-94b0b5b8a3391b629f8d.json",
+					"name" : "mujoco_visualizer",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-bbdd12b015f4c9e50c8d.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/ali/grasp_ws/build/grasp_simulation",
+		"source" : "/home/ali/grasp_ws/src/grasp_simulation"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

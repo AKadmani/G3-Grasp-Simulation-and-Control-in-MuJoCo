@@ -1,0 +1,6 @@
+[35m[1mConsolidate compiler generated dependencies of target mujoco_visualizer[0m
+[35m[1mConsolidate compiler generated dependencies of target minimal_test[0m
+[35m[1mConsolidate compiler generated dependencies of target grasp_controller[0m
+[ 50%] [32mBuilding CXX object CMakeFiles/minimal_test.dir/src/minimal_test.cpp.o[0m
+[ 50%] Built target mujoco_visualizer
+[ 83%] Built target grasp_controller

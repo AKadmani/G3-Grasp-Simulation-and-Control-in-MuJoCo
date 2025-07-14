@@ -1,0 +1,17 @@
+<mujoco model="cylinder_object">
+    <asset>
+        <mesh name="cylinder" file="cylinder.stl" scale="0.04 0.04 0.08"/>
+        <material name="object_mat" rgba="0.8 0.2 0.2 1"/>
+    </asset>
+    
+    <worldbody>
+        <body name="cylinder" pos="0 0 0.1">
+            <joint type="free"/>
+            <geom name="cylinder_geom" type="cylinder" size="0.03 0.06" 
+                  mass="0.2" material="object_mat" 
+                  friction="1.0 0.005 0.0001" condim="4"/>
+            <inertial pos="0 0 0" mass="0.2" 
+                      diaginertia="0.00018 0.00018 0.00009"/>
+        </body>
+    </worldbody>
+</mujoco>
