@@ -1,2 +1,0 @@
-Invoking command in '/home/ali/grasp_ws/build/grasp_simulation': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble NX_CONNECTION=138.246.3.10 51344 10.172.0.2 4000 /usr/bin/cmake --build /home/ali/grasp_ws/build/grasp_simulation -- -j4 -l4
-Invoked command in '/home/ali/grasp_ws/build/grasp_simulation' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble NX_CONNECTION=138.246.3.10 51344 10.172.0.2 4000 /usr/bin/cmake --build /home/ali/grasp_ws/build/grasp_simulation -- -j4 -l4

@@ -1,0 +1,4 @@
+[console_scripts]
+grasp_simulation_node.py = grasp_simulation_control.grasp_simulation_node:main
+run_complete_simulation = grasp_simulation_control.run_complete_simulation:main
+
