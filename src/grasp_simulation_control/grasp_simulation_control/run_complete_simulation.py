@@ -121,12 +121,12 @@ def run_complete_simulation(args):
                 if trajectory_index < len(trajectory):
                     target_pos = trajectory[trajectory_index]
                     trajectory_index += 1
-                    print(trajectory_index)
+                    #print(trajectory_index)
                 else:
                     phase = 'grasp'
                     phase_timer = 0
                     print("Transitioning to GRASP phase")
-                    time.sleep(5)  # Pause before grasping
+                    #time.sleep(5)  # Pause before grasping
                     target_pos = grasp_plan['grasp']
                     
             elif phase == 'grasp':
@@ -144,6 +144,10 @@ def run_complete_simulation(args):
                         obj_id = model.body(obj_name).id
                         lift_start_height = data.xpos[obj_id][2]
                         print("Grasp established, transitioning to LIFT phase")
+                    else:
+                        print("Insufficient contacts for stable grasp, retrying...")
+                        #here the hand has to close more to establish contact
+                        
                         
             elif phase == 'lift':
                 target_pos = grasp_plan['grasp']
@@ -280,6 +284,7 @@ def run_complete_simulation(args):
     
 def get_contact_data(model, data, object_type):
     """Extract contact data from simulation"""
+
     num_contacts = data.ncon
     contact_positions = []
     contact_orientations = []
@@ -301,8 +306,9 @@ def get_contact_data(model, data, object_type):
         # Check if contact involves the object
         geom1_name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_GEOM, contact.geom1)
         geom2_name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_GEOM, contact.geom2)
-        
-        if object_type in str(geom1_name) or object_type in str(geom2_name):
+        if geom1_name == "floor" or geom2_name == "floor":
+            continue
+        elif object_type in str(geom1_name) or object_type in str(geom2_name):
             contact_positions.append(contact.pos.copy())
             
             # Determine which geom is the finger
