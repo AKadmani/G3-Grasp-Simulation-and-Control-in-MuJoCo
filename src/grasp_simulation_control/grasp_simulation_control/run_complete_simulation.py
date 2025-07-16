@@ -43,8 +43,21 @@ def run_complete_simulation(args):
     print("=" * 60)
     
     # Load MuJoCo model
-    model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-                          "models/allegro_hand/scene_left_modified.xml")
+    if args.object == 'cylinder':
+        # Use the cylinder scene for cylinder object
+        model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
+                                  "models/allegro_hand/scene_left_zylinder.xml")
+    elif args.object == 'box':
+        # Use a box scene (not provided in this example, assuming similar structure)
+        model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
+                                  "models/allegro_hand/scene_left_box.xml")
+    elif args.object == 'sphere':
+        # Use a sphere scene (not provided in this example, assuming similar structure)
+        model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
+                                  "models/allegro_hand/scene_left_sphere.xml")
+    else:
+        raise ValueError(f"Unknown object type: {args.object}")
+    print(f"Loading model from: {model_path}")
     model = mujoco.MjModel.from_xml_path(model_path)
     data = mujoco.MjData(model)
     
@@ -98,7 +111,7 @@ def run_complete_simulation(args):
         for _ in range(100):
             mujoco.mj_step(model, data)
             viewer.sync()
-            time.sleep(0.01)
+            time.sleep(0.03)
         
         print("Beginning grasp sequence...")
         
@@ -108,10 +121,12 @@ def run_complete_simulation(args):
                 if trajectory_index < len(trajectory):
                     target_pos = trajectory[trajectory_index]
                     trajectory_index += 1
+                    print(trajectory_index)
                 else:
                     phase = 'grasp'
                     phase_timer = 0
                     print("Transitioning to GRASP phase")
+                    time.sleep(5)  # Pause before grasping
                     target_pos = grasp_plan['grasp']
                     
             elif phase == 'grasp':
@@ -201,7 +216,7 @@ def run_complete_simulation(args):
                 print("\nSimulation complete!")
                 break
                 
-            time.sleep(0.001)  # Small delay for visualization
+            time.sleep(0.01)  # Small delay for visualization
     
     # Generate report
     print("\nGenerating analysis report...")

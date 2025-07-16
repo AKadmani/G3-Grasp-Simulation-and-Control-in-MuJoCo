@@ -124,7 +124,7 @@
   </asset>
 
   <worldbody>
-    <body name="palm" quat="0 1 0 1" childclass="allegro_left">
+    <body name="palm" quat="-1 1 0 0" childclass="allegro_left">
       <geom quat="1 -1 0 0" class="palm_visual" mesh="base_link_left"/>
       <geom class="palm_collision"/>
       <!-- Ring finger -->

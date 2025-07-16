@@ -77,9 +77,9 @@ class GraspPlanner:
         config = np.zeros(16)
         # Three fingers wrap
         for i in range(3):
-            config[i*4:(i+1)*4] = [0.2, 0.6, 0.5, 0.4]
+            config[i*4:(i+1)*4] = [0.0, 0.6, 0.5, 0.4]
         # Thumb opposes
-        config[12:16] = [0.6, 0.4, 0.3, 0.2]
+        config[12:16] = [1.3, 0, 0.0, 0.0]
         return config
         
     def plan_grasp(self, object_type, grasp_type):
@@ -109,8 +109,9 @@ class GraspPlanner:
         obj_id = self.model.body(obj_name).id
         obj_pos = self.data.xpos[obj_id].copy()
         
-        # Adjust grasp based on object
+        # Adjust grasp based on object    
         grasp_config = self._adjust_grasp_for_object(pre_grasp, object_type, grasp_type)
+
         
         # Generate approach trajectory
         trajectory = self._generate_trajectory(pre_grasp, grasp_config)
@@ -131,7 +132,7 @@ class GraspPlanner:
         if object_type == 'cylinder' and grasp_type == GraspType.CYLINDRICAL_GRASP:
             # Increase finger curvature for cylinder
             for i in range(3):
-                grasp[i*4+1:i*4+4] *= 1.2
+                grasp[i*4+1:i*4+4] *= 1.1
         elif object_type == 'sphere' and grasp_type == GraspType.SPHERICAL_GRASP:
             # Uniform curvature for sphere
             for i in range(4):
