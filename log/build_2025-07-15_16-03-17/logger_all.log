@@ -1,0 +1,160 @@
+[0.191s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--packages-select', 'grasp_simulation_control', '--symlink-install']
+[0.192s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=True, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=4, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=['grasp_simulation_control'], packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, mixin_files=None, mixin=None, verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0x73c92c566ce0>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x73c92c565fc0>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x73c92c565fc0>>, mixin_verb=('build',))
+[0.486s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.486s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.486s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.486s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.486s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.486s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.486s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/ali/grasp_ws'
+[0.486s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.487s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.487s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.487s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.487s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.487s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.487s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.487s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.487s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.508s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.508s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.508s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.509s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.509s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.509s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.509s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.509s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.510s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.510s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.510s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.510s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.510s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.510s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.511s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[0.511s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[0.511s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[0.511s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[0.511s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[0.511s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[0.511s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[0.511s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[0.511s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[0.511s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[0.511s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[0.512s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[0.512s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[0.512s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[0.512s] Level 1:colcon.colcon_core.package_identification:_identify(src/grasp_simulation_control) by extensions ['ignore', 'ignore_ament_install']
+[0.512s] Level 1:colcon.colcon_core.package_identification:_identify(src/grasp_simulation_control) by extension 'ignore'
+[0.512s] Level 1:colcon.colcon_core.package_identification:_identify(src/grasp_simulation_control) by extension 'ignore_ament_install'
+[0.512s] Level 1:colcon.colcon_core.package_identification:_identify(src/grasp_simulation_control) by extensions ['colcon_pkg']
+[0.512s] Level 1:colcon.colcon_core.package_identification:_identify(src/grasp_simulation_control) by extension 'colcon_pkg'
+[0.513s] Level 1:colcon.colcon_core.package_identification:_identify(src/grasp_simulation_control) by extensions ['colcon_meta']
+[0.513s] Level 1:colcon.colcon_core.package_identification:_identify(src/grasp_simulation_control) by extension 'colcon_meta'
+[0.513s] Level 1:colcon.colcon_core.package_identification:_identify(src/grasp_simulation_control) by extensions ['ros']
+[0.513s] Level 1:colcon.colcon_core.package_identification:_identify(src/grasp_simulation_control) by extension 'ros'
+[0.517s] DEBUG:colcon.colcon_core.package_identification:Package 'src/grasp_simulation_control' with type 'ros.ament_python' and name 'grasp_simulation_control'
+[0.517s] Level 1:colcon.colcon_core.package_identification:_identify(src/mujoco) by extensions ['ignore', 'ignore_ament_install']
+[0.517s] Level 1:colcon.colcon_core.package_identification:_identify(src/mujoco) by extension 'ignore'
+[0.518s] Level 1:colcon.colcon_core.package_identification:_identify(src/mujoco) by extension 'ignore_ament_install'
+[0.518s] Level 1:colcon.colcon_core.package_identification:_identify(src/mujoco) by extensions ['colcon_pkg']
+[0.518s] Level 1:colcon.colcon_core.package_identification:_identify(src/mujoco) by extension 'colcon_pkg'
+[0.518s] Level 1:colcon.colcon_core.package_identification:_identify(src/mujoco) by extensions ['colcon_meta']
+[0.518s] Level 1:colcon.colcon_core.package_identification:_identify(src/mujoco) by extension 'colcon_meta'
+[0.518s] Level 1:colcon.colcon_core.package_identification:_identify(src/mujoco) by extensions ['ros']
+[0.518s] Level 1:colcon.colcon_core.package_identification:_identify(src/mujoco) by extension 'ros'
+[0.518s] Level 1:colcon.colcon_core.package_identification:_identify(src/mujoco) by extensions ['cmake', 'python']
+[0.518s] Level 1:colcon.colcon_core.package_identification:_identify(src/mujoco) by extension 'cmake'
+[0.946s] Level 1:colcon.colcon_core.package_identification:_identify(src/mujoco) by extension 'python'
+[0.946s] DEBUG:colcon.colcon_core.package_identification:Package 'src/mujoco' with type 'cmake' and name 'mujoco'
+[0.946s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.946s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.946s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.946s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.946s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.998s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'mujoco' in 'src/mujoco'
+[0.999s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[0.999s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[1.000s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/ali/grasp_ws/install/grasp_simulation' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[1.000s] WARNING:colcon.colcon_ros.prefix_path.catkin:The path '/home/ali/grasp_ws/install/grasp_simulation' in the environment variable CMAKE_PREFIX_PATH doesn't exist
+[1.001s] WARNING:colcon.colcon_ros.prefix_path.catkin:The path '/home/ali/grasp_ws/install/mujoco' in the environment variable CMAKE_PREFIX_PATH doesn't exist
+[1.002s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 1 installed packages in /home/ali/grasp_ws/install
+[1.002s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 0 installed packages in /home/ali/G3-Grasp-Simulation-and-Control-in-MuJoCo/install
+[1.003s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 0 installed packages in /home/ali/G3-Grasp-Simulation-and-Control-in-MuJoCo/code/install
+[1.005s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 271 installed packages in /opt/ros/humble
+[1.007s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[1.076s] Level 5:colcon.colcon_core.verb:set package 'grasp_simulation_control' build argument 'cmake_args' from command line to 'None'
+[1.076s] Level 5:colcon.colcon_core.verb:set package 'grasp_simulation_control' build argument 'cmake_target' from command line to 'None'
+[1.076s] Level 5:colcon.colcon_core.verb:set package 'grasp_simulation_control' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[1.076s] Level 5:colcon.colcon_core.verb:set package 'grasp_simulation_control' build argument 'cmake_clean_cache' from command line to 'False'
+[1.076s] Level 5:colcon.colcon_core.verb:set package 'grasp_simulation_control' build argument 'cmake_clean_first' from command line to 'False'
+[1.076s] Level 5:colcon.colcon_core.verb:set package 'grasp_simulation_control' build argument 'cmake_force_configure' from command line to 'False'
+[1.076s] Level 5:colcon.colcon_core.verb:set package 'grasp_simulation_control' build argument 'ament_cmake_args' from command line to 'None'
+[1.076s] Level 5:colcon.colcon_core.verb:set package 'grasp_simulation_control' build argument 'catkin_cmake_args' from command line to 'None'
+[1.076s] Level 5:colcon.colcon_core.verb:set package 'grasp_simulation_control' build argument 'catkin_skip_building_tests' from command line to 'False'
+[1.076s] DEBUG:colcon.colcon_core.verb:Building package 'grasp_simulation_control' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ali/grasp_ws/build/grasp_simulation_control', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ali/grasp_ws/install/grasp_simulation_control', 'merge_install': False, 'path': '/home/ali/grasp_ws/src/grasp_simulation_control', 'symlink_install': True, 'test_result_base': None}
+[1.077s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[1.079s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[1.079s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/ali/grasp_ws/src/grasp_simulation_control' with build type 'ament_python'
+[1.080s] Level 1:colcon.colcon_core.shell:create_environment_hook('grasp_simulation_control', 'ament_prefix_path')
+[1.084s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[1.084s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/hook/ament_prefix_path.ps1'
+[1.085s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/hook/ament_prefix_path.dsv'
+[1.086s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/hook/ament_prefix_path.sh'
+[1.087s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.087s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.577s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/ali/grasp_ws/src/grasp_simulation_control'
+[1.577s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.577s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[2.305s] DEBUG:colcon.colcon_core.task.python.build:While undoing a previous installation files outside the Python library path are being ignored: /home/ali/grasp_ws/install/grasp_simulation_control/share/ament_index/resource_index/packages/grasp_simulation_control
+[2.306s] DEBUG:colcon.colcon_core.task.python.build:While undoing a previous installation files outside the Python library path are being ignored: /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/package.xml
+[2.306s] DEBUG:colcon.colcon_core.task.python.build:While undoing a previous installation files outside the Python library path are being ignored: /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/launch/grasp_simulation.launch.py
+[2.306s] DEBUG:colcon.colcon_core.task.python.build:While undoing a previous installation files outside the Python library path are being ignored: /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand/left_hand.xml
+[2.306s] DEBUG:colcon.colcon_core.task.python.build:While undoing a previous installation files outside the Python library path are being ignored: /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand/scene_grasp.xml
+[2.306s] DEBUG:colcon.colcon_core.task.python.build:While undoing a previous installation files outside the Python library path are being ignored: /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand/scene_right.xml
+[2.306s] DEBUG:colcon.colcon_core.task.python.build:While undoing a previous installation files outside the Python library path are being ignored: /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand/right_hand.xml
+[2.306s] DEBUG:colcon.colcon_core.task.python.build:While undoing a previous installation files outside the Python library path are being ignored: /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand/scene_left.xml
+[2.306s] DEBUG:colcon.colcon_core.task.python.build:While undoing a previous installation files outside the Python library path are being ignored: /home/ali/grasp_ws/install/grasp_simulation_control/lib/grasp_simulation_control/grasp_simulation_node.py
+[2.306s] DEBUG:colcon.colcon_core.task.python.build:While undoing a previous installation files outside the Python library path are being ignored: /home/ali/grasp_ws/install/grasp_simulation_control/lib/grasp_simulation_control/run_complete_simulation
+[2.309s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ali/grasp_ws/build/grasp_simulation_control': NX_CONNECTION=138.246.3.10 51344 10.172.0.2 4000 PYTHONPATH=/home/ali/grasp_ws/build/grasp_simulation_control/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ali/grasp_ws/build/grasp_simulation_control/build --no-deps symlink_data --force
+[3.168s] Level 1:colcon.colcon_core.shell:create_environment_hook('grasp_simulation_control', 'pythonpath_develop')
+[3.170s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ali/grasp_ws/build/grasp_simulation_control/share/grasp_simulation_control/hook/pythonpath_develop.ps1'
+[3.170s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ali/grasp_ws/build/grasp_simulation_control' returned '0': NX_CONNECTION=138.246.3.10 51344 10.172.0.2 4000 PYTHONPATH=/home/ali/grasp_ws/build/grasp_simulation_control/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ali/grasp_ws/build/grasp_simulation_control/build --no-deps symlink_data --force
+[3.171s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ali/grasp_ws/build/grasp_simulation_control/share/grasp_simulation_control/hook/pythonpath_develop.dsv'
+[3.171s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ali/grasp_ws/build/grasp_simulation_control/share/grasp_simulation_control/hook/pythonpath_develop.sh'
+[3.177s] Level 1:colcon.colcon_core.environment:checking '/home/ali/grasp_ws/install/grasp_simulation_control' for CMake module files
+[3.178s] Level 1:colcon.colcon_core.environment:checking '/home/ali/grasp_ws/install/grasp_simulation_control' for CMake config files
+[3.179s] Level 1:colcon.colcon_core.environment:checking '/home/ali/grasp_ws/install/grasp_simulation_control/lib'
+[3.180s] Level 1:colcon.colcon_core.environment:checking '/home/ali/grasp_ws/install/grasp_simulation_control/bin'
+[3.180s] Level 1:colcon.colcon_core.environment:checking '/home/ali/grasp_ws/install/grasp_simulation_control/lib/pkgconfig/grasp_simulation_control.pc'
+[3.181s] Level 1:colcon.colcon_core.environment:checking '/home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages'
+[3.181s] Level 1:colcon.colcon_core.shell:create_environment_hook('grasp_simulation_control', 'pythonpath')
+[3.181s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/hook/pythonpath.ps1'
+[3.182s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/hook/pythonpath.dsv'
+[3.183s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/hook/pythonpath.sh'
+[3.183s] Level 1:colcon.colcon_core.environment:checking '/home/ali/grasp_ws/install/grasp_simulation_control/bin'
+[3.184s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(grasp_simulation_control)
+[3.184s] INFO:colcon.colcon_core.shell:Creating package script '/home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/package.ps1'
+[3.186s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/package.dsv'
+[3.186s] INFO:colcon.colcon_core.shell:Creating package script '/home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/package.sh'
+[3.188s] INFO:colcon.colcon_core.shell:Creating package script '/home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/package.bash'
+[3.189s] INFO:colcon.colcon_core.shell:Creating package script '/home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/package.zsh'
+[3.191s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ali/grasp_ws/install/grasp_simulation_control/share/colcon-core/packages/grasp_simulation_control)
+[3.191s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[3.192s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[3.192s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[3.192s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[3.200s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[3.200s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[3.200s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[3.235s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[3.235s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ali/grasp_ws/install/local_setup.ps1'
+[3.237s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/ali/grasp_ws/install/_local_setup_util_ps1.py'
+[3.240s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ali/grasp_ws/install/setup.ps1'
+[3.242s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ali/grasp_ws/install/local_setup.sh'
+[3.244s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/ali/grasp_ws/install/_local_setup_util_sh.py'
+[3.245s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ali/grasp_ws/install/setup.sh'
+[3.248s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ali/grasp_ws/install/local_setup.bash'
+[3.250s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ali/grasp_ws/install/setup.bash'
+[3.253s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ali/grasp_ws/install/local_setup.zsh'
+[3.255s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ali/grasp_ws/install/setup.zsh'

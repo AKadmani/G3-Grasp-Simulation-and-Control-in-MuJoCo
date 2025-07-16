@@ -1,0 +1,123 @@
+<mujoco model="allegro_grasp_scene">
+    <compiler angle="radian" meshdir="meshes" texturedir="textures"/>
+    
+    <option gravity="0 0 -9.81" timestep="0.002" integrator="implicitfast"/>
+    
+    <default>
+        <joint limited="true" damping="0.05" armature="0.001"/>
+        <geom contype="1" conaffinity="1" friction="1 0.5 0.0001" solref="0.02 1" solimp="0.8 0.9 0.001"/>
+    </default>
+    
+    <asset>
+        <!-- Include Allegro hand meshes -->
+        <mesh file="base_link.stl"/>
+        <mesh file="link_0_0.stl"/>
+        <mesh file="link_1_0.stl"/>
+        <mesh file="link_2_0.stl"/>
+        <mesh file="link_3_0.stl"/>
+        <mesh file="link_12_0_right.stl"/>
+        <mesh file="link_13_0.stl"/>
+        <mesh file="link_14_0.stl"/>
+        <mesh file="link_15_0.stl"/>
+        
+        <texture name="grid" type="2d" builtin="checker" rgb1="0.1 0.1 0.1" rgb2="0.2 0.2 0.2" width="512" height="512"/>
+        <material name="grid" texture="grid" texrepeat="1 1" texuniform="true" reflectance="0.2"/>
+    </asset>
+    
+    <worldbody>
+        <!-- Ground plane -->
+        <geom name="floor" type="plane" size="2 2 0.1" material="grid"/>
+        
+        <!-- Table -->
+        <body name="table" pos="0 0 0.5">
+            <geom name="tabletop" type="box" size="0.6 0.4 0.05" rgba="0.8 0.6 0.4 1"/>
+            <geom name="leg1" type="cylinder" pos="-0.5 -0.3 -0.25" size="0.02 0.25" rgba="0.5 0.3 0.1 1"/>
+            <geom name="leg2" type="cylinder" pos="0.5 -0.3 -0.25" size="0.02 0.25" rgba="0.5 0.3 0.1 1"/>
+            <geom name="leg3" type="cylinder" pos="-0.5 0.3 -0.25" size="0.02 0.25" rgba="0.5 0.3 0.1 1"/>
+            <geom name="leg4" type="cylinder" pos="0.5 0.3 -0.25" size="0.02 0.25" rgba="0.5 0.3 0.1 1"/>
+        </body>
+        
+        <!-- Include Allegro hand -->
+        <include file="scene_left.xml"/>
+        
+        <!-- Objects to grasp -->
+        <!-- Cylinder object -->
+        <body name="cylinder_object" pos="0 0 0.6">
+            <freejoint/>
+            <geom name="cylinder" type="cylinder" size="0.03 0.08" rgba="0.2 0.7 0.3 1" mass="0.2"/>
+            <site name="cylinder_top" pos="0 0 0.08" size="0.01"/>
+            <site name="cylinder_center" pos="0 0 0" size="0.01"/>
+        </body>
+        
+        <!-- Box object -->
+        <body name="box_object" pos="0.2 0 0.6">
+            <freejoint/>
+            <geom name="box" type="box" size="0.04 0.04 0.04" rgba="0.8 0.2 0.2 1" mass="0.15"/>
+            <site name="box_center" pos="0 0 0" size="0.01"/>
+        </body>
+        
+        <!-- Sphere object -->
+        <body name="sphere_object" pos="-0.2 0 0.6">
+            <freejoint/>
+            <geom name="sphere" type="sphere" size="0.04" rgba="0.2 0.2 0.8 1" mass="0.1"/>
+            <site name="sphere_center" pos="0 0 0" size="0.01"/>
+        </body>
+    </worldbody>
+    
+    <contact>
+        <exclude body1="base_link" body2="table"/>
+    </contact>
+    
+    <actuator>
+        <!-- Allegro hand actuators - position control -->
+        <!-- Index finger -->
+        <position name="index_joint_0" joint="joint_0" kp="5" forcerange="-0.5 0.5"/>
+        <position name="index_joint_1" joint="joint_1" kp="5" forcerange="-0.5 0.5"/>
+        <position name="index_joint_2" joint="joint_2" kp="5" forcerange="-0.5 0.5"/>
+        <position name="index_joint_3" joint="joint_3" kp="5" forcerange="-0.5 0.5"/>
+        
+        <!-- Middle finger -->
+        <position name="middle_joint_0" joint="joint_4" kp="5" forcerange="-0.5 0.5"/>
+        <position name="middle_joint_1" joint="joint_5" kp="5" forcerange="-0.5 0.5"/>
+        <position name="middle_joint_2" joint="joint_6" kp="5" forcerange="-0.5 0.5"/>
+        <position name="middle_joint_3" joint="joint_7" kp="5" forcerange="-0.5 0.5"/>
+        
+        <!-- Ring finger -->
+        <position name="ring_joint_0" joint="joint_8" kp="5" forcerange="-0.5 0.5"/>
+        <position name="ring_joint_1" joint="joint_9" kp="5" forcerange="-0.5 0.5"/>
+        <position name="ring_joint_2" joint="joint_10" kp="5" forcerange="-0.5 0.5"/>
+        <position name="ring_joint_3" joint="joint_11" kp="5" forcerange="-0.5 0.5"/>
+        
+        <!-- Thumb -->
+        <position name="thumb_joint_0" joint="joint_12" kp="5" forcerange="-0.5 0.5"/>
+        <position name="thumb_joint_1" joint="joint_13" kp="5" forcerange="-0.5 0.5"/>
+        <position name="thumb_joint_2" joint="joint_14" kp="5" forcerange="-0.5 0.5"/>
+        <position name="thumb_joint_3" joint="joint_15" kp="5" forcerange="-0.5 0.5"/>
+    </actuator>
+    
+    <sensor>
+        <!-- Joint position sensors -->
+        <jointpos name="joint_pos_0" joint="joint_0"/>
+        <jointpos name="joint_pos_1" joint="joint_1"/>
+        <jointpos name="joint_pos_2" joint="joint_2"/>
+        <jointpos name="joint_pos_3" joint="joint_3"/>
+        <jointpos name="joint_pos_4" joint="joint_4"/>
+        <jointpos name="joint_pos_5" joint="joint_5"/>
+        <jointpos name="joint_pos_6" joint="joint_6"/>
+        <jointpos name="joint_pos_7" joint="joint_7"/>
+        <jointpos name="joint_pos_8" joint="joint_8"/>
+        <jointpos name="joint_pos_9" joint="joint_9"/>
+        <jointpos name="joint_pos_10" joint="joint_10"/>
+        <jointpos name="joint_pos_11" joint="joint_11"/>
+        <jointpos name="joint_pos_12" joint="joint_12"/>
+        <jointpos name="joint_pos_13" joint="joint_13"/>
+        <jointpos name="joint_pos_14" joint="joint_14"/>
+        <jointpos name="joint_pos_15" joint="joint_15"/>
+        
+        <!-- Force/torque sensors at fingertips -->
+        <touch name="index_tip_touch" site="index_tip"/>
+        <touch name="middle_tip_touch" site="middle_tip"/>
+        <touch name="ring_tip_touch" site="ring_tip"/>
+        <touch name="thumb_tip_touch" site="thumb_tip"/>
+    </sensor>
+</mujoco>

@@ -1,0 +1,10 @@
+GRASP SIMULATION SUMMARY STATISTICS
+==================================================
+
+Total simulation duration: 13.85 seconds
+Total object displacement: 0.360 m
+Object lift height: -0.096 m
+Average contact force: 1.00 N
+Maximum contact force: 1.00 N
+Average joint torque: 40.185 Nm
+Maximum joint torque: 180.441 Nm

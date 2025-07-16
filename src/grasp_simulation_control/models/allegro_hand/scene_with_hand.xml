@@ -1,0 +1,32 @@
+<mujoco model="allegro_grasp_scene">
+    <!-- Include the Allegro hand with explicit positioning -->
+    <worldbody>
+        <!-- Position the hand above the table -->
+        <body name="hand_mount" pos="0 0 0.3" euler="0 0 0">
+            <include file="left_hand.xml"/>
+        </body>
+        
+        <!-- Table -->
+        <body name="grasp_table" pos="0 0 0">
+            <geom name="grasp_tabletop" type="box" size="0.6 0.4 0.05" rgba="0.8 0.6 0.4 1"/>
+        </body>
+        
+        <!-- Cylinder object -->
+        <body name="cylinder_object" pos="0 0 0.15">
+            <freejoint/>
+            <geom name="cylinder" type="cylinder" size="0.03 0.08" rgba="0.2 0.7 0.3 1" mass="0.2"/>
+        </body>
+        
+        <!-- Box object -->
+        <body name="box_object" pos="0.2 0 0.15">
+            <freejoint/>
+            <geom name="box" type="box" size="0.04 0.04 0.04" rgba="0.8 0.2 0.2 1" mass="0.15"/>
+        </body>
+        
+        <!-- Sphere object -->
+        <body name="sphere_object" pos="-0.2 0 0.15">
+            <freejoint/>
+            <geom name="sphere" type="sphere" size="0.04" rgba="0.2 0.2 0.8 1" mass="0.1"/>
+        </body>
+    </worldbody>
+</mujoco>
