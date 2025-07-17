@@ -26,8 +26,8 @@ class GraspAnalyzer:
             'controller_errors': []
         }
         
-    def record_state(self, controller, grasp_quality=None):
-        """Record current state for analysis"""
+    def record_state(self, controller, grasp_quality=None, joint_error=None, planned_position=None):
+        """Record current state for analysis, now with joint error and planned position"""
         self.results['timestamps'].append(time.time())
         self.results['joint_positions'].append(controller.get_joint_positions().copy())
         self.results['joint_velocities'].append(controller.get_joint_velocities().copy())
@@ -55,6 +55,18 @@ class GraspAnalyzer:
         except:
             self.results['object_pose'].append(np.zeros(7))
             
+        # Record joint error
+        if joint_error is not None:
+            if 'joint_errors' not in self.results:
+                self.results['joint_errors'] = []
+            self.results['joint_errors'].append(joint_error.copy())
+            
+        # Record planned (target) joint position
+        if planned_position is not None:
+            if 'planned_positions' not in self.results:
+                self.results['planned_positions'] = []
+            self.results['planned_positions'].append(planned_position.copy())
+
     def generate_report(self, output_dir='reports'):
         """Generate comprehensive analysis report"""
         os.makedirs(output_dir, exist_ok=True)
@@ -78,7 +90,7 @@ class GraspAnalyzer:
         return report_dir
         
     def plot_joint_trajectories(self, output_dir):
-        """Plot joint position trajectories"""
+        """Plot joint position trajectories, joint errors, and planned positions"""
         if not self.results['joint_positions']:
             return
             
@@ -89,13 +101,23 @@ class GraspAnalyzer:
         fig, axes = plt.subplots(4, 4, figsize=(16, 12))
         axes = axes.flatten()
         
+        # Plot joint positions
         for i in range(16):
             ax = axes[i]
-            ax.plot(timestamps, joint_positions[:, i])
+            ax.plot(timestamps, joint_positions[:, i], label='Position')
             ax.set_title(f'Joint {i}')
             ax.set_xlabel('Time (s)')
             ax.set_ylabel('Position (rad)')
             ax.grid(True)
+            # Plot joint error if available
+            if 'joint_errors' in self.results and self.results['joint_errors']:
+                joint_errors = np.array(self.results['joint_errors'])
+                ax.plot(timestamps[:len(joint_errors)], joint_errors[:, i], label='Error')
+            # Plot planned position if available
+            if 'planned_positions' in self.results and self.results['planned_positions']:
+                planned_positions = np.array(self.results['planned_positions'])
+                ax.plot(timestamps[:len(planned_positions)], planned_positions[:, i], label='Planned')
+            ax.legend()
             
         plt.tight_layout()
         plt.savefig(os.path.join(output_dir, 'joint_trajectories.png'))

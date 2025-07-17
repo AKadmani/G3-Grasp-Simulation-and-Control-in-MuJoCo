@@ -132,7 +132,7 @@ def run_complete_simulation(args):
             elif phase == 'grasp':
                 target_pos = grasp_plan['grasp']
                 phase_timer += 1
-                
+
                 # Check for stable grasp after some time
                 if phase_timer > 100:
                     contact_data = get_contact_data(model, data, args.object)
@@ -145,8 +145,9 @@ def run_complete_simulation(args):
                         lift_start_height = data.xpos[obj_id][2]
                         print("Grasp established, transitioning to LIFT phase")
                     else:
-                        print("Insufficient contacts for stable grasp, retrying...")
+                        print("Insufficient contacts for stable grasp, closing hand...")
                         #here the hand has to close more to establish contact
+                        
                         
                         
             elif phase == 'lift':
@@ -180,7 +181,10 @@ def run_complete_simulation(args):
             # Compute and apply control
             control_signal = controller.compute_control(target_pos)
             controller.set_control(control_signal)
-            
+            # print(f"Phase: {phase}, Target Position: {target_pos}, ")
+            # print(f"Joint Positions: {controller.get_joint_positions()}")
+            joint_error =  controller.get_joint_positions() - target_pos
+            print(f"difference: {joint_error}")
             # Step simulation
             mujoco.mj_step(model, data)
             viewer.sync()
@@ -212,8 +216,8 @@ def run_complete_simulation(args):
                     # Grasp matrix calculation might fail with insufficient contacts
                     pass
             
-            # Record data for analysis
-            analyzer.record_state(controller, grasp_quality)
+            # Record data for analysis (now also passing joint error and planned position)
+            analyzer.record_state(controller, grasp_quality, joint_error, target_pos)
             
             # Check for termination
             if phase == 'hold' and phase_timer > 100:
