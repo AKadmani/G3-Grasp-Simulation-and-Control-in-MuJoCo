@@ -184,7 +184,7 @@ def run_complete_simulation(args):
             # print(f"Phase: {phase}, Target Position: {target_pos}, ")
             # print(f"Joint Positions: {controller.get_joint_positions()}")
             joint_error =  controller.get_joint_positions() - target_pos
-            print(f"difference: {joint_error}")
+            # print(f"difference: {joint_error}")
             # Step simulation
             mujoco.mj_step(model, data)
             viewer.sync()

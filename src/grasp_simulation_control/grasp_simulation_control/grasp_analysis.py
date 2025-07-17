@@ -109,6 +109,14 @@ class GraspAnalyzer:
             ax.set_xlabel('Time (s)')
             ax.set_ylabel('Position (rad)')
             ax.grid(True)
+            # Set y-limits to min/max for this joint
+            ymin = np.min(joint_positions[:, i])
+            ymax = np.max(joint_positions[:, i])
+            if ymin == ymax:
+                # Avoid zero range
+                ymin -= 0.01
+                ymax += 0.01
+            ax.set_ylim([ymin, ymax])
             # Plot joint error if available
             if 'joint_errors' in self.results and self.results['joint_errors']:
                 joint_errors = np.array(self.results['joint_errors'])
@@ -118,9 +126,14 @@ class GraspAnalyzer:
                 planned_positions = np.array(self.results['planned_positions'])
                 ax.plot(timestamps[:len(planned_positions)], planned_positions[:, i], label='Planned')
             ax.legend()
+            allegro_lower = [-0.47, -0.196, -0.174, -0.227] * 3 + [0.263, -0.105, -0.189, -0.162]
+            allegro_upper = [0.47, 1.61, 1.709, 1.618] * 3 + [1.396, 1.163, 1.644, 1.719]
+            ax.set_ylim([allegro_lower[i], allegro_upper[i]])
+        
             
         plt.tight_layout()
         plt.savefig(os.path.join(output_dir, 'joint_trajectories.png'))
+        plt.show()
         plt.close()
         
     def plot_contact_forces(self, output_dir):

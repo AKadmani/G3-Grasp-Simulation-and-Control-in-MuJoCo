@@ -29,7 +29,7 @@ class GraspController(ABC):
 class PIDController(GraspController):
     """PID position controller"""
     
-    def __init__(self, model, data, kp=5.0, ki=0.1, kd=0.5):
+    def __init__(self, model, data, kp=15.0, ki=0.3, kd=2.0):
         super().__init__(model, data)
         self.kp = np.ones(self.n_joints) * kp
         self.ki = np.ones(self.n_joints) * ki
@@ -64,7 +64,7 @@ class PIDController(GraspController):
 class ImpedanceController(GraspController):
     """Impedance controller for compliant grasping"""
     
-    def __init__(self, model, data, k_p=50.0, k_d=5.0, k_f=0.1):
+    def __init__(self, model, data, k_p=10.0, k_d=2.0, k_f=0.1):
         super().__init__(model, data)
         self.k_p = np.ones(self.n_joints) * k_p  # Position stiffness
         self.k_d = np.ones(self.n_joints) * k_d  # Damping
@@ -95,7 +95,21 @@ class ImpedanceController(GraspController):
         
         # Total control
         control = tau_pos + tau_damp + tau_force
-        
+       
+        # Get joint limits
+        # joint_lower = self.model.jnt_range[:self.n_joints, 0]
+        # joint_upper = self.model.jnt_range[:self.n_joints, 1]
+        # control = np.clip(control, joint_lower, joint_upper)
+
+        # check if position of joint is close enough to where it should be and then give current position as control
+        for i in range(self.n_joints):
+            if abs(target_positions[i] - current_pos[i]) < 0.01:
+                control[i] = target_positions[i]
+
+        for i in control:
+            if i < -2.0 or i > 2.0:
+                print(f"Control signal out of bounds: {i}")
+        print("Control signals:", control)
         return control
 
 class HybridController(GraspController):
@@ -130,6 +144,7 @@ class HybridController(GraspController):
             tau_force = self.k_f * force_selection @ target_forces[:self.n_joints]
         
         control = tau_pos + tau_force
+        
         
         return control
 

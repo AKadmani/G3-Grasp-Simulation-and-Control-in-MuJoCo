@@ -82,7 +82,7 @@ class GraspPlanner:
         config[12:16] = [1.3, 0, 0.0, 0.0]
         return config
         
-    def plan_grasp(self, object_type, grasp_type):
+    def plan_grasp(self, object_type, grasp_type, close_further=False):
         """
         Plan a grasp for given object and grasp type
         
@@ -111,8 +111,10 @@ class GraspPlanner:
         
         # Adjust grasp based on object    
         grasp_config = self._adjust_grasp_for_object(pre_grasp, object_type, grasp_type)
+        if close_further:
+            # If close further, adjust grasp to be tighter
+            grasp_config = self.grasp_more(grasp_config, object_type, grasp_type)
 
-        
         # Generate approach trajectory
         trajectory = self._generate_trajectory(pre_grasp, grasp_config)
         
@@ -132,7 +134,7 @@ class GraspPlanner:
         if object_type == 'cylinder' and grasp_type == GraspType.CYLINDRICAL_GRASP:
             # Increase finger curvature for cylinder
             for i in range(3):
-                grasp[i*4+1:i*4+4] *= 1.1
+                grasp[i*4+1:i*4+4] *= 1.5
         elif object_type == 'sphere' and grasp_type == GraspType.SPHERICAL_GRASP:
             # Uniform curvature for sphere
             for i in range(4):
@@ -147,7 +149,7 @@ class GraspPlanner:
         
         return grasp
         
-    def _generate_trajectory(self, start_config, end_config, duration=2.0, dt=0.01):
+    def _generate_trajectory(self, start_config, end_config, duration=5.0, dt=0.0001):
         """Generate smooth trajectory between configurations"""
         n_steps = int(duration / dt)
         trajectory = []
@@ -201,3 +203,24 @@ class GraspPlanner:
             'no_self_collision': no_self_collision,
             'reachable': reachable
         }
+    def grasp_more(self, pre_grasp, object_type, grasp_type):
+        """Adjust grasp if object is not held"""
+        grasp = pre_grasp.copy()
+        
+        if object_type == 'cylinder' and grasp_type == GraspType.CYLINDRICAL_GRASP:
+            # Increase finger curvature for cylinder
+            for i in range(3):
+                grasp[i*4+1:i*4+4] *= 1.1
+        elif object_type == 'sphere' and grasp_type == GraspType.SPHERICAL_GRASP:
+            # Uniform curvature for sphere
+            for i in range(4):
+                grasp[i*4+1:i*4+3] *= 1.1
+        elif object_type == 'box' and grasp_type == GraspType.PRECISION_GRASP:
+            # Less curvature for flat surfaces
+            grasp[1:3] *= 0.8  # Index finger
+            grasp[13:15] *= 0.8  # Thumb
+            
+        # Ensure within joint limits
+        grasp = np.clip(grasp, self.joint_limits['lower'], self.joint_limits['upper'])
+        
+        return grasp
