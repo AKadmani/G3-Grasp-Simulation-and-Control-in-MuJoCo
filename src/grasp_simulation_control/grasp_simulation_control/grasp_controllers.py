@@ -64,7 +64,7 @@ class PIDController(GraspController):
 class ImpedanceController(GraspController):
     """Impedance controller for compliant grasping"""
     
-    def __init__(self, model, data, k_p=20.0, k_d=3, k_f=0.1):
+    def __init__(self, model, data, k_p=2, k_d=0.2, k_f=0.0):
         super().__init__(model, data)
         self.k_p = np.ones(self.n_joints) * k_p  # Position stiffness
         self.k_d = np.ones(self.n_joints) * k_d  # Damping

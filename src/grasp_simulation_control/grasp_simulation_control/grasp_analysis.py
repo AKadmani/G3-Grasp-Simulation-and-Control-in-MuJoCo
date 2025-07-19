@@ -128,7 +128,7 @@ class GraspAnalyzer:
             ax.legend()
             allegro_lower = [-0.47, -0.196, -0.174, -0.227] * 3 + [0.263, -0.105, -0.189, -0.162]
             allegro_upper = [0.47, 1.61, 1.709, 1.618] * 3 + [1.396, 1.163, 1.644, 1.719]
-            ax.set_ylim([allegro_lower[i], allegro_upper[i]])
+            ax.set_ylim([allegro_lower[i]-0.1, allegro_upper[i]+0.1])
         
             
         plt.tight_layout()
