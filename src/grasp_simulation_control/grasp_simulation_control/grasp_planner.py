@@ -149,7 +149,7 @@ class GraspPlanner:
         
         return grasp
         
-    def _generate_trajectory(self, start_config, end_config, duration=5.0, dt=0.0001):
+    def _generate_trajectory(self, start_config, end_config, duration=2.0, dt=0.01):
         """Generate smooth trajectory between configurations"""
         n_steps = int(duration / dt)
         trajectory = []
