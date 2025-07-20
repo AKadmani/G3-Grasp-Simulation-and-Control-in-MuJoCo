@@ -107,16 +107,30 @@ def run_complete_simulation(args):
     
     with mujoco.viewer.launch_passive(model, data) as viewer:
         # Warm-up phase
+        freejoint_addr = 0  # Assuming palm's freejoint is at the start of qpos
+        # Hold the hand at the origin before the lift phase
+        z_pos = 0.0  # Initial Z position for the palm's freejoint
+
         print("Warming up simulation...")
         for _ in range(100):
             mujoco.mj_step(model, data)
             viewer.sync()
             time.sleep(0.03)
+            data.qpos[freejoint_addr + 0] = 0.0  # x
+            data.qpos[freejoint_addr + 1] = 0.0  # y
+            data.qpos[freejoint_addr + 2] = 0.0  # z
+            data.qpos[freejoint_addr + 3] = -1.0  # qw (identity quaternion)
+            data.qpos[freejoint_addr + 4] = 1.0  # qx
+            data.qpos[freejoint_addr + 5] = 0.0  # qy
+            
         
         print("Beginning grasp sequence...")
         
         while viewer.is_running():
+            
+            
             # Control logic
+
             if phase == 'approach':
                 if trajectory_index < len(trajectory):
                     target_pos = trajectory[trajectory_index]
@@ -153,11 +167,15 @@ def run_complete_simulation(args):
             elif phase == 'lift':
                 target_pos = grasp_plan['grasp']
                 
-                # Apply upward force to hand
-                if phase_timer < 200:
-                    lift_force = min(phase_timer * 0.02, 3.0)
-                    base_id = model.body('palm').id
-                    data.xfrc_applied[base_id, 2] = lift_force
+
+                # Move the hand upward by incrementing the palm's freejoint Z position
+                palm_body_id = model.body('palm').id
+                freejoint_addr = 0  # Assuming palm's freejoint is at the start of qpos
+                # Only move for the first 200 steps
+                if phase_timer <= 200:
+                    # qpos[2] is Z position for freejoint (x, y, z, qw, qx, qy, qz)
+                    z_pos += 0.0005  # Move up by 0.5mm per step
+                
                     
                 phase_timer += 1
                 
@@ -181,10 +199,17 @@ def run_complete_simulation(args):
             # Compute and apply control
             control_signal = controller.compute_control(target_pos)
             controller.set_control(control_signal)
-            # print(f"Phase: {phase}, Target Position: {target_pos}, ")
-            # print(f"Joint Positions: {controller.get_joint_positions()}")
             joint_error =  controller.get_joint_positions() - target_pos
-            # print(f"difference: {joint_error}")
+            
+            data.qpos[freejoint_addr + 0] = 0.0  # x
+            data.qpos[freejoint_addr + 1] = 0.0  # y
+            data.qpos[freejoint_addr + 2] = z_pos  # z
+            data.qpos[freejoint_addr + 3] = -1.0  # qw (identity quaternion)
+            data.qpos[freejoint_addr + 4] = 1.0  # qx
+            data.qpos[freejoint_addr + 5] = 0.0  # qy
+            data.qpos[freejoint_addr + 6] = 0.0  # qz
+
+
             # Step simulation
             mujoco.mj_step(model, data)
             viewer.sync()

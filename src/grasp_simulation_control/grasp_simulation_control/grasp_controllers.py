@@ -16,11 +16,11 @@ class GraspController(ABC):
     
     def get_joint_positions(self):
         """Get current joint positions"""
-        return self.data.qpos[:self.n_joints].copy()
+        return self.data.qpos[7:self.n_joints+7].copy()
     
     def get_joint_velocities(self):
         """Get current joint velocities"""
-        return self.data.qvel[:self.n_joints].copy()
+        return self.data.qvel[6:self.n_joints+6].copy()
     
     def set_control(self, control_signals):
         """Apply control signals to actuators"""
