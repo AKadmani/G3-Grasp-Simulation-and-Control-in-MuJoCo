@@ -1,4 +1,6 @@
 <mujoco model="left_allegro_hand scene">
+
+  <option timestep="0.001" cone="elliptic" impratio="1" solver="Newton" iterations="500" tolerance="1e-10" />
   <include file="left_hand.xml"/>
 
   <statistic center="0 0 0" extent="0.3"/>
@@ -22,9 +24,9 @@
     <geom name="floor" pos="0 0 -0.1" size="0 0 0.05" type="plane" material="groundplane"/>
     
     <!-- Our three objects positioned close to the hand -->
-    <body name="cylinder_object" pos="0.06 0 0">
+    <body name="cylinder_object" pos="0.06 -0.005 0">
       <freejoint/>
-      <geom name="cylinder" type="cylinder" size="0.04 0.1" rgba="0.2 0.7 0.3 1" mass="1"/>
+      <geom name="cylinder" type="cylinder" size="0.04 0.1" rgba="0.2 0.7 0.3 1" mass="0.3" friction="0.1 0.1 0.1"/>
     </body>
   </worldbody>
 </mujoco>
