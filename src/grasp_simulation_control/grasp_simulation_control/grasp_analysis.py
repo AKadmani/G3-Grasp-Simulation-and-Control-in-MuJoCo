@@ -31,7 +31,11 @@ class GraspAnalyzer:
         self.results['timestamps'].append(time.time())
         self.results['joint_positions'].append(controller.get_joint_positions().copy())
         self.results['joint_velocities'].append(controller.get_joint_velocities().copy())
-        self.results['joint_torques'].append(self.data.ctrl[:16].copy())
+        # Record the actually applied (clamped) torques if available, else fall back to data.ctrl
+        if hasattr(controller, 'last_applied_torque'):
+            self.results['joint_torques'].append(controller.last_applied_torque.copy())
+        else:
+            self.results['joint_torques'].append(self.data.ctrl[:16].copy())
         
         # Record contact forces
         contact_forces = []
@@ -93,7 +97,7 @@ class GraspAnalyzer:
         """Plot joint position trajectories, joint errors, and planned positions"""
         if not self.results['joint_positions']:
             return
-            
+        
         joint_positions = np.array(self.results['joint_positions'])
         timestamps = np.array(self.results['timestamps'])
         timestamps = timestamps - timestamps[0]  # Relative time
@@ -130,9 +134,34 @@ class GraspAnalyzer:
             allegro_upper = [0.47, 1.61, 1.709, 1.618] * 3 + [1.396, 1.163, 1.644, 1.719]
             ax.set_ylim([allegro_lower[i]-0.1, allegro_upper[i]+0.1])
         
-            
         plt.tight_layout()
         plt.savefig(os.path.join(output_dir, 'joint_trajectories.png'))
+        plt.show()
+        plt.close()
+
+        # Plot joint torques (NEW)
+        if not self.results['joint_torques']:
+            return
+        joint_torques = np.array(self.results['joint_torques'])
+        fig, axes = plt.subplots(4, 4, figsize=(16, 12))
+        axes = axes.flatten()
+        for i in range(16):
+            ax = axes[i]
+            ax.plot(timestamps, joint_torques[:, i], label='Torque', color='tab:orange')
+            ax.set_title(f'Joint {i}')
+            ax.set_xlabel('Time (s)')
+            ax.set_ylabel('Torque (Nm)')
+            ax.grid(True)
+            # Set y-limits to min/max for this joint
+            ymin = np.min(joint_torques[:, i])
+            ymax = np.max(joint_torques[:, i])
+            if ymin == ymax:
+                ymin -= 0.01
+                ymax += 0.01
+            ax.set_ylim([ymin, ymax])
+            ax.legend()
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, 'joint_torques.png'))
         plt.show()
         plt.close()
         

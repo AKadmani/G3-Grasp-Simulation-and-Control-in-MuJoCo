@@ -23,8 +23,14 @@ class GraspController(ABC):
         return self.data.qvel[6:self.n_joints+6].copy()
     
     def set_control(self, control_signals):
-        """Apply control signals to actuators"""
-        self.data.ctrl[:self.n_joints] = control_signals
+        """Apply control signals to actuators, enforcing joint torque limits"""
+        # Allegro hand torque limits (Nm)
+        torque_min = -0.7
+        torque_max = 0.7
+        clamped = np.clip(control_signals, torque_min, torque_max)
+        self.data.ctrl[:self.n_joints] = clamped
+        # Store the actually applied torques for analysis (optional, for analyzer)
+        self.last_applied_torque = clamped.copy()
 
 class PIDController(GraspController):
     """PID position controller"""
@@ -64,35 +70,33 @@ class PIDController(GraspController):
 class ImpedanceController(GraspController):
     """Impedance controller for compliant grasping"""
     
-    def __init__(self, model, data, k_p=2, k_d=0.2, k_f=0.0):
+    def __init__(self, model, data, k_p=5, k_d=0.11, k_f=0.1):
         super().__init__(model, data)
-        self.k_p = np.ones(self.n_joints) * k_p  # Position stiffness
+        self.k_p = np.ones(self.n_joints) * k_p  # Position stiffness (default)
         self.k_d = np.ones(self.n_joints) * k_d  # Damping
         self.k_f = k_f  # Force feedback gain
         self.desired_impedance = np.diag(np.ones(self.n_joints) * 0.1)
         
-    def compute_control(self, target_positions, target_forces=None):
+    def compute_control(self, target_positions, target_forces=None, jacobian=None):
         """
         Compute impedance control signals
-        tau = K_p * (q_d - q) - K_d * q_dot + J^T * F_d
+        tau = K_p * (q_d - q) - K_d * q_dot + J^T * F_d (if J available)
         """
         current_pos = self.get_joint_positions()
         current_vel = self.get_joint_velocities()
-        
+
         # Position control term
         pos_error = target_positions - current_pos
         tau_pos = self.k_p * pos_error
-        
+
         # Damping term
         tau_damp = -self.k_d * current_vel
-        
+
         # Force control term (if forces provided)
         tau_force = np.zeros(self.n_joints)
         if target_forces is not None:
-            # This would require the Jacobian computation
-            # For now, simplified force feedback
             tau_force = self.k_f * target_forces[:self.n_joints]
-        
+
         # Total control
         control = tau_pos + tau_damp + tau_force
 
@@ -137,12 +141,12 @@ class HybridController(GraspController):
 class AdaptiveGraspController(ImpedanceController):
     """Adaptive impedance controller that adjusts based on contact feedback"""
     
-    def __init__(self, model, data, k_p=50.0, k_d=5.0, k_f=0.1):
+    def __init__(self, model, data, k_p=5, k_d=0.07, k_f=0.1):
         super().__init__(model, data, k_p, k_d, k_f)
         self.contact_threshold = 0.1
         self.stiffness_adaptation_rate = 0.1
-        self.min_stiffness = 10.0
-        self.max_stiffness = 100.0
+        self.min_stiffness = 1
+        self.max_stiffness = 10
         
     def adapt_stiffness(self, contact_forces):
         """Adapt stiffness based on contact forces"""
@@ -174,3 +178,37 @@ class AdaptiveGraspController(ImpedanceController):
         # This would read from force sensors
         # For now, return estimated forces based on joint torques
         return np.zeros(self.n_joints)  # Placeholder
+    
+    def modulate_grip_force(self, contact_data):
+        """Modulate grip force based on estimated contact forces using J and G matrices."""
+        # Import calculation functions
+        import calculationFunctions as calc
+        # Estimate G and J using available contact data
+        try:
+            G_t, J = calc.grasp_matrix_transposed_and_jacobian(
+                contact_data['positions'],
+                contact_data['orientations'],
+                contact_data['joint_positions'],
+                contact_data['joint_directions'],
+                contact_data['object_position'],
+                'SF'  # or use args.contact if available
+            )
+            # Estimate joint torques (tau) from current control
+            tau = self.data.ctrl[:self.n_joints]
+            # Estimate contact forces: F = (J^T)^+ tau (pseudo-inverse)
+            if J.shape[0] > 0 and J.shape[1] > 0:
+                JT = J.transpose()
+                JT_pinv = np.linalg.pinv(JT)
+                F_est = JT_pinv @ tau
+                # Simple rule: if norm of F_est is low, increase k_p; if high, decrease
+                force_magnitude = np.linalg.norm(F_est)
+                if hasattr(self, 'k_p'):
+                    if force_magnitude < 0.1:
+                        self.k_p *= 1.005  # Increase grip
+                    elif force_magnitude > 1.0:
+                        self.k_p *= 0.995  # Decrease grip
+                    # Clamp to reasonable range
+                    self.k_p = np.clip(self.k_p, 1.0, 100.0)
+        except Exception as e:
+            # If calculation fails, do nothing
+            pass

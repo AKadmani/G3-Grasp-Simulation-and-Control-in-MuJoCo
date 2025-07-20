@@ -93,6 +93,9 @@ def run_complete_simulation(args):
     # Plan grasp
     grasp_plan = planner.plan_grasp(args.object, grasp_type)
     trajectory = grasp_plan['trajectory']
+    current_grasp = grasp_plan['grasp'].copy()
+    last_object_pose = grasp_plan['object_position'].copy()
+    grasp_refined = False
     
     # Initialize analyzer
     analyzer = GraspAnalyzer(model, data)
@@ -108,105 +111,227 @@ def run_complete_simulation(args):
     with mujoco.viewer.launch_passive(model, data) as viewer:
         # Warm-up phase
         freejoint_addr = 0  # Assuming palm's freejoint is at the start of qpos
-        # Hold the hand at the origin before the lift phase
         z_pos = 0.0  # Initial Z position for the palm's freejoint
-
+        wait_timer = 0
         print("Warming up simulation...")
-        for _ in range(100):
+        for _ in range(300):
             mujoco.mj_step(model, data)
-            viewer.sync()
-            time.sleep(0.03)
+            time.sleep(0.003)
             data.qpos[freejoint_addr + 0] = 0.0  # x
             data.qpos[freejoint_addr + 1] = 0.0  # y
             data.qpos[freejoint_addr + 2] = 0.0  # z
             data.qpos[freejoint_addr + 3] = -1.0  # qw (identity quaternion)
             data.qpos[freejoint_addr + 4] = 1.0  # qx
             data.qpos[freejoint_addr + 5] = 0.0  # qy
-            
-        
-        print("Beginning grasp sequence...")
-        
+            viewer.sync()
+
+        # Pre-approach phase: move hand in +x until contact with object
+        print("Pre-approach: moving hand in +x until contact with object...")
+        pre_approach_contact = False
+        pre_approach_x = 0.0
+        pre_approach_dx = 0.0005  # 0.5mm per step
+        max_pre_approach_steps = 2000
+        pre_approach_steps = 0
+        while not pre_approach_contact and pre_approach_steps < max_pre_approach_steps:
+            # Move hand in +x
+            pre_approach_x += pre_approach_dx
+            data.qpos[freejoint_addr + 0] = pre_approach_x
+            data.qpos[freejoint_addr + 1] = 0.0
+            data.qpos[freejoint_addr + 2] = 0.0
+            data.qpos[freejoint_addr + 3] = -1.0
+            data.qpos[freejoint_addr + 4] = 1.0
+            data.qpos[freejoint_addr + 5] = 0.0
+            data.qpos[freejoint_addr + 6] = 0.0
+            mujoco.mj_step(model, data)
+            viewer.sync()
+            # Check for contact with object
+            contact_data = get_contact_data(model, data, args.object)
+            if contact_data['num_contacts'] > 0:
+                pre_approach_contact = True
+                print(f"Contact with object established after {pre_approach_steps} steps at x = {pre_approach_x:.4f}")
+            pre_approach_steps += 1
+            time.sleep(0.003)
+        # Set z_pos for subsequent phases
+        pre_approach_x -= 0.001  # Adjust to be slightly before contact
+        z_pos = 0.0
+        # Now proceed to main control loop
         while viewer.is_running():
-            
-            
             # Control logic
+            contact_data = get_contact_data(model, data, args.object)
+            object_pose = contact_data['object_position']
 
             if phase == 'approach':
                 if trajectory_index < len(trajectory):
                     target_pos = trajectory[trajectory_index]
                     trajectory_index += 1
-                    #print(trajectory_index)
                 else:
                     phase = 'grasp'
                     phase_timer = 0
                     print("Transitioning to GRASP phase")
-                    #time.sleep(5)  # Pause before grasping
-                    target_pos = grasp_plan['grasp']
-                    
+                    target_pos = current_grasp.copy()
+
             elif phase == 'grasp':
-                target_pos = grasp_plan['grasp']
+                # Use feedback to refine grasp if not enough contacts
+                target_pos = current_grasp.copy()
                 phase_timer += 1
 
+                # If object pose has changed, update grasp target (object pose feedback)
+                if not np.allclose(object_pose, last_object_pose, atol=1e-3):
+                    print("Object pose changed, refining grasp target.")  
+                    # Optionally, could re-plan grasp here
+                    last_object_pose = object_pose.copy()
+
                 # Check for stable grasp after some time
-                if phase_timer > 100:
-                    contact_data = get_contact_data(model, data, args.object)
+                if phase_timer > 200:
+                    stable_grasp = False
                     if contact_data['num_contacts'] >= 3:
+                        G_t, J = calc.grasp_matrix_transposed_and_jacobian(
+                                contact_data['positions'],
+                                contact_data['orientations'],
+                                contact_data['joint_positions'],
+                                contact_data['joint_directions'],
+                                contact_data['object_position'],
+                                args.contact
+                            )
+                        # Check grasp stability using G and J matrices
+                        try:
+                            G_t, J = calc.grasp_matrix_transposed_and_jacobian(
+                                contact_data['positions'],
+                                contact_data['orientations'],
+                                contact_data['joint_positions'],
+                                contact_data['joint_directions'],
+                                contact_data['object_position'],
+                                args.contact
+                            )
+                            grasp_quality = calc.compute_grasp_quality(G_t, args.contact)
+                            if grasp_quality['force_closure'] and grasp_quality['min_singular_value'] > 1e-3:
+                                stable_grasp = True
+                        except Exception as e:
+                            print(f"Grasp stability check failed: {e}")
+                            stable_grasp = False
+                    if stable_grasp:
                         phase = 'lift'
                         phase_timer = 0
                         # Record initial object height
                         obj_name = f"{args.object}_object"
                         obj_id = model.body(obj_name).id
                         lift_start_height = data.xpos[obj_id][2]
-                        print("Grasp established, transitioning to LIFT phase")
+                        print("Grasp established (G/J check), transitioning to LIFT phase")
+                        wait_timer = 0
                     else:
-                        print("Insufficient contacts for stable grasp, closing hand...")
-                        #here the hand has to close more to establish contact
-                        
-                        
-                        
-            elif phase == 'lift':
-                target_pos = grasp_plan['grasp']
-                
+                        if contact_data['num_contacts'] >= 1:
+                        # Feedback-based grasp refinement: close hand further
+                            print(contact_data['num_contacts'], "contacts detected, refining grasp...")
+                            if wait_timer > 100:
+                                print("Insufficient contacts or unstable grasp, closing hand further and modulating grip...")
+                                wait_timer = 0
+                                current_grasp = planner.grasp_more(current_grasp, args.object, grasp_type)
+                                target_pos = current_grasp.copy()
+                            wait_timer += 1
+                        else:
+                            current_grasp = planner.grasp_more(current_grasp, args.object, grasp_type)
+                            target_pos = current_grasp.copy()
 
+                        # Optionally, modulate grip force based on contact forces (if available)
+                        if hasattr(controller, 'modulate_grip_force'):
+                            controller.modulate_grip_force(contact_data)
+
+            elif phase == 'lift':
+                target_pos = current_grasp.copy()
                 # Move the hand upward by incrementing the palm's freejoint Z position
                 palm_body_id = model.body('palm').id
                 freejoint_addr = 0  # Assuming palm's freejoint is at the start of qpos
-                # Only move for the first 200 steps
-                if phase_timer <= 200:
-                    # qpos[2] is Z position for freejoint (x, y, z, qw, qx, qy, qz)
-                    z_pos += 0.0005  # Move up by 0.5mm per step
-                
-                    
+                # Only move for the first 2000 steps
+                if phase_timer <= 2000:
+                    z_pos += 0.00005  # Move up by 0.05mm per step
                 phase_timer += 1
-                
                 # Check if object has been lifted
                 obj_name = f"{args.object}_object"
                 obj_id = model.body(obj_name).id
                 current_height = data.xpos[obj_id][2]
-                
+                # Check grasp quality during lift only if object is not moving upwards
+                grasp_quality = None
+                # Calculate object vertical velocity
+                object_velocity_z = data.cvel[obj_id][2] if hasattr(data, 'cvel') and obj_id < len(data.cvel) else 0.0
+                # Only check grasp if object is not moving up (z velocity <= 0)
+                if contact_data['num_contacts'] > 0 and object_velocity_z <= 0.0:
+                    try:
+                        G_t, J = calc.grasp_matrix_transposed_and_jacobian(
+                            contact_data['positions'],
+                            contact_data['orientations'],
+                            contact_data['joint_positions'],
+                            contact_data['joint_directions'],
+                            contact_data['object_position'],
+                            args.contact
+                        )
+                        grasp_quality = calc.compute_grasp_quality(G_t, args.contact)
+                        if not grasp_quality['force_closure']:
+                            if wait_timer > 5:
+                                print("Force closure lost during lift, closing hand further!")
+                                current_grasp = planner.grasp_more(current_grasp, args.object, grasp_type)
+                                target_pos = current_grasp.copy()
+                                wait_timer = 0
+                            wait_timer += 1
+                            if hasattr(controller, 'modulate_grip_force'):
+                                controller.modulate_grip_force(contact_data)
+                    except Exception as e:
+                        print(f"Grasp quality check failed during lift: {e}")
                 if phase_timer > 100 and current_height > lift_start_height + 0.05:
                     phase = 'hold'
                     phase_timer = 0
                     print(f"Lift successful! Object raised {current_height - lift_start_height:.3f}m")
                     print("Transitioning to HOLD phase")
-                    
+
             else:  # hold
-                target_pos = grasp_plan['grasp']
+                target_pos = current_grasp.copy()
                 # Maintain upward force
                 base_id = model.body('palm').id
                 data.xfrc_applied[base_id, 2] = 3.0
-            
+
             # Compute and apply control
-            control_signal = controller.compute_control(target_pos)
-            controller.set_control(control_signal)
-            joint_error =  controller.get_joint_positions() - target_pos
-            
-            data.qpos[freejoint_addr + 0] = 0.0  # x
+            # Only send control to the hand joints (skip freejoint entries)
+            # Use Jacobian if available (from grasp/lift phase)
+            J_for_control = None
+            if phase in ['grasp', 'lift'] and contact_data['num_contacts'] >= 3:
+                try:
+                    _, J_for_control = calc.grasp_matrix_transposed_and_jacobian(
+                        contact_data['positions'],
+                        contact_data['orientations'],
+                        contact_data['joint_positions'],
+                        contact_data['joint_directions'],
+                        contact_data['object_position'],
+                        args.contact
+                    )
+                except Exception as e:
+                    J_for_control = None
+            # Pass J to controller if supported
+            if hasattr(controller, 'compute_control') and 'J' in controller.compute_control.__code__.co_varnames:
+                control_signal = controller.compute_control(target_pos, J=J_for_control)
+            else:
+                control_signal = controller.compute_control(target_pos)
+            if hasattr(controller, 'set_control') and 'J' in controller.set_control.__code__.co_varnames:
+                controller.set_control(control_signal, J=J_for_control)
+            else:
+                if len(control_signal) == len(data.qpos):
+                    controller.set_control(control_signal[6:])
+                else:
+                    controller.set_control(control_signal)
+            # Compute joint error only for hand joints
+            joint_positions = controller.get_joint_positions()
+            if len(joint_positions) == len(target_pos):
+                joint_error = joint_positions - target_pos
+            elif len(joint_positions) == len(target_pos) + 6:
+                joint_error = joint_positions[6:] - target_pos
+            else:
+                joint_error = joint_positions - target_pos  # fallback
+            # ...existing code...
+            data.qpos[freejoint_addr + 0] = pre_approach_x  # x
             data.qpos[freejoint_addr + 1] = 0.0  # y
             data.qpos[freejoint_addr + 2] = z_pos  # z
             data.qpos[freejoint_addr + 3] = -1.0  # qw (identity quaternion)
             data.qpos[freejoint_addr + 4] = 1.0  # qx
             data.qpos[freejoint_addr + 5] = 0.0  # qy
+
             data.qpos[freejoint_addr + 6] = 0.0  # qz
 
 
@@ -249,7 +374,7 @@ def run_complete_simulation(args):
                 print("\nSimulation complete!")
                 break
                 
-            time.sleep(0.01)  # Small delay for visualization
+            time.sleep(0.003)  # Small delay for visualization
     
     # Generate report
     print("\nGenerating analysis report...")
