@@ -1,0 +1,16 @@
+[1.160s] Invoking command in '/home/ali/grasp_ws/src/grasp_simulation_control': NX_CONNECTION=138.246.3.10 51344 10.172.0.2 4000 PYTHONPATH=/home/ali/grasp_ws/build/grasp_simulation_control/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/grasp_simulation_control build --build-base /home/ali/grasp_ws/build/grasp_simulation_control/build install --record /home/ali/grasp_ws/build/grasp_simulation_control/install.log --single-version-externally-managed install_data
+[1.591s] running egg_info
+[1.592s] writing ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/PKG-INFO
+[1.592s] writing dependency_links to ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/dependency_links.txt
+[1.593s] writing entry points to ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/entry_points.txt
+[1.593s] writing requirements to ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/requires.txt
+[1.593s] writing top-level names to ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/top_level.txt
+[1.599s] reading manifest file '../../build/grasp_simulation_control/grasp_simulation_control.egg-info/SOURCES.txt'
+[1.601s] writing manifest file '../../build/grasp_simulation_control/grasp_simulation_control.egg-info/SOURCES.txt'
+[1.602s] running build
+[1.602s] running build_py
+[1.603s] running install
+[1.603s] running install_lib
+[1.606s] running install_data
+[1.606s] error: can't copy 'models/allegro_hand': doesn't exist or not a regular file
+[1.643s] Invoked command in '/home/ali/grasp_ws/src/grasp_simulation_control' returned '1': NX_CONNECTION=138.246.3.10 51344 10.172.0.2 4000 PYTHONPATH=/home/ali/grasp_ws/build/grasp_simulation_control/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/grasp_simulation_control build --build-base /home/ali/grasp_ws/build/grasp_simulation_control/build install --record /home/ali/grasp_ws/build/grasp_simulation_control/install.log --single-version-externally-managed install_data

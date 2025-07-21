@@ -1,0 +1,51 @@
+[1.438s] Invoking command in '/home/ali/grasp_ws/build/grasp_simulation_control': NX_CONNECTION=138.246.3.10 51344 10.172.0.2 4000 PYTHONPATH=/home/ali/grasp_ws/build/grasp_simulation_control/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/ali/grasp_ws/build/grasp_simulation_control/build
+[1.933s] running develop
+[2.251s] Removing /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp-simulation-control.egg-link (link to .)
+[2.306s] Invoked command in '/home/ali/grasp_ws/build/grasp_simulation_control' returned '0': NX_CONNECTION=138.246.3.10 51344 10.172.0.2 4000 PYTHONPATH=/home/ali/grasp_ws/build/grasp_simulation_control/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/ali/grasp_ws/build/grasp_simulation_control/build
+[2.309s] Invoking command in '/home/ali/grasp_ws/src/grasp_simulation_control': NX_CONNECTION=138.246.3.10 51344 10.172.0.2 4000 PYTHONPATH=/home/ali/grasp_ws/build/grasp_simulation_control/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/grasp_simulation_control build --build-base /home/ali/grasp_ws/build/grasp_simulation_control/build install --record /home/ali/grasp_ws/build/grasp_simulation_control/install.log --single-version-externally-managed install_data --force
+[2.773s] running egg_info
+[2.774s] writing ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/PKG-INFO
+[2.774s] writing dependency_links to ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/dependency_links.txt
+[2.775s] writing entry points to ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/entry_points.txt
+[2.775s] writing requirements to ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/requires.txt
+[2.775s] writing top-level names to ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/top_level.txt
+[2.779s] reading manifest file '../../build/grasp_simulation_control/grasp_simulation_control.egg-info/SOURCES.txt'
+[2.784s] writing manifest file '../../build/grasp_simulation_control/grasp_simulation_control.egg-info/SOURCES.txt'
+[2.784s] running build
+[2.785s] running build_py
+[2.786s] copying grasp_simulation_control/run_complete_simulation.py -> /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control
+[2.786s] running install
+[2.786s] running install_lib
+[2.788s] creating /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control
+[2.788s] copying /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control/__init__.py -> /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control
+[2.789s] copying /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control/grasp_controllers.py -> /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control
+[2.789s] copying /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control/test_import.py -> /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control
+[2.790s] copying /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control/calculationFunctions.py -> /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control
+[2.790s] copying /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control/run_complete_simulation.py -> /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control
+[2.790s] copying /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control/grasp_analysis.py -> /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control
+[2.791s] copying /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control/grasp_simulation_node.py -> /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control
+[2.791s] copying /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control/grasp_planner.py -> /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control
+[2.791s] byte-compiling /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control/__init__.py to __init__.cpython-310.pyc
+[2.791s] byte-compiling /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control/grasp_controllers.py to grasp_controllers.cpython-310.pyc
+[2.794s] byte-compiling /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control/test_import.py to test_import.cpython-310.pyc
+[2.795s] byte-compiling /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control/calculationFunctions.py to calculationFunctions.cpython-310.pyc
+[2.796s] byte-compiling /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control/run_complete_simulation.py to run_complete_simulation.cpython-310.pyc
+[2.800s] byte-compiling /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control/grasp_analysis.py to grasp_analysis.cpython-310.pyc
+[2.806s] byte-compiling /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control/grasp_simulation_node.py to grasp_simulation_node.cpython-310.pyc
+[2.810s] byte-compiling /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control/grasp_planner.py to grasp_planner.cpython-310.pyc
+[2.813s] running install_data
+[2.815s] copying resource/grasp_simulation_control -> /home/ali/grasp_ws/install/grasp_simulation_control/share/ament_index/resource_index/packages
+[2.815s] copying package.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control
+[2.815s] copying launch/grasp_simulation.launch.py -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/launch
+[2.816s] copying models/allegro_hand/left_hand.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand
+[2.816s] copying models/allegro_hand/scene_grasp.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand
+[2.816s] copying models/allegro_hand/scene_right.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand
+[2.817s] copying models/allegro_hand/right_hand.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand
+[2.817s] copying models/allegro_hand/scene_left.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand
+[2.817s] running install_egg_info
+[2.819s] Copying ../../build/grasp_simulation_control/grasp_simulation_control.egg-info to /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control-0.1.0-py3.10.egg-info
+[2.821s] running install_scripts
+[2.857s] Installing grasp_simulation_node.py script to /home/ali/grasp_ws/install/grasp_simulation_control/lib/grasp_simulation_control
+[2.860s] Installing run_complete_simulation script to /home/ali/grasp_ws/install/grasp_simulation_control/lib/grasp_simulation_control
+[2.860s] writing list of installed files to '/home/ali/grasp_ws/build/grasp_simulation_control/install.log'
+[2.916s] Invoked command in '/home/ali/grasp_ws/src/grasp_simulation_control' returned '0': NX_CONNECTION=138.246.3.10 51344 10.172.0.2 4000 PYTHONPATH=/home/ali/grasp_ws/build/grasp_simulation_control/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/grasp_simulation_control build --build-base /home/ali/grasp_ws/build/grasp_simulation_control/build install --record /home/ali/grasp_ws/build/grasp_simulation_control/install.log --single-version-externally-managed install_data --force

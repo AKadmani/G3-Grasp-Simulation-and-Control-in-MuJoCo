@@ -1,0 +1,23 @@
+running develop
+running egg_info
+writing grasp_simulation_control.egg-info/PKG-INFO
+writing dependency_links to grasp_simulation_control.egg-info/dependency_links.txt
+writing entry points to grasp_simulation_control.egg-info/entry_points.txt
+writing requirements to grasp_simulation_control.egg-info/requires.txt
+writing top-level names to grasp_simulation_control.egg-info/top_level.txt
+reading manifest file 'grasp_simulation_control.egg-info/SOURCES.txt'
+writing manifest file 'grasp_simulation_control.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp-simulation-control.egg-link (link to .)
+Installing grasp_simulation_node.py script to /home/ali/grasp_ws/install/grasp_simulation_control/lib/grasp_simulation_control
+Installing run_complete_simulation script to /home/ali/grasp_ws/install/grasp_simulation_control/lib/grasp_simulation_control
+
+Installed /home/ali/grasp_ws/build/grasp_simulation_control
+running symlink_data
+symbolically linking /home/ali/grasp_ws/build/grasp_simulation_control/resource/grasp_simulation_control -> /home/ali/grasp_ws/install/grasp_simulation_control/share/ament_index/resource_index/packages
+symbolically linking /home/ali/grasp_ws/build/grasp_simulation_control/package.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control
+symbolically linking /home/ali/grasp_ws/build/grasp_simulation_control/launch/grasp_simulation.launch.py -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/launch
+symbolically linking /home/ali/grasp_ws/build/grasp_simulation_control/models/allegro_hand/allegro_hand.png -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand
+symbolically linking /home/ali/grasp_ws/build/grasp_simulation_control/models/allegro_hand/left_hand.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand
+symbolically linking /home/ali/grasp_ws/build/grasp_simulation_control/models/allegro_hand/scene_grasp.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand
+symbolically linking /home/ali/grasp_ws/build/grasp_simulation_control/models/allegro_hand/scene_right.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand

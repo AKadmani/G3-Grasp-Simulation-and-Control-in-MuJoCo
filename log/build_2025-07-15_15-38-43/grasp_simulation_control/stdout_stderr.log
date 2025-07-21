@@ -1,0 +1,46 @@
+running egg_info
+creating ../../build/grasp_simulation_control/grasp_simulation_control.egg-info
+writing ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/PKG-INFO
+writing dependency_links to ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/dependency_links.txt
+writing entry points to ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/entry_points.txt
+writing requirements to ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/requires.txt
+writing top-level names to ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/top_level.txt
+writing manifest file '../../build/grasp_simulation_control/grasp_simulation_control.egg-info/SOURCES.txt'
+reading manifest file '../../build/grasp_simulation_control/grasp_simulation_control.egg-info/SOURCES.txt'
+writing manifest file '../../build/grasp_simulation_control/grasp_simulation_control.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/ali/grasp_ws/build/grasp_simulation_control/build
+creating /home/ali/grasp_ws/build/grasp_simulation_control/build/lib
+creating /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control
+copying grasp_simulation_control/__init__.py -> /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control
+copying grasp_simulation_control/grasp_controllers.py -> /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control
+copying grasp_simulation_control/calculationFunctions.py -> /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control
+copying grasp_simulation_control/grasp_analysis.py -> /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control
+copying grasp_simulation_control/grasp_simulation_node.py -> /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control
+copying grasp_simulation_control/grasp_planner.py -> /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control
+running install
+running install_lib
+creating /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control
+copying /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control/__init__.py -> /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control
+copying /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control/grasp_controllers.py -> /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control
+copying /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control/calculationFunctions.py -> /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control
+copying /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control/grasp_analysis.py -> /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control
+copying /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control/grasp_simulation_node.py -> /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control
+copying /home/ali/grasp_ws/build/grasp_simulation_control/build/lib/grasp_simulation_control/grasp_planner.py -> /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control
+byte-compiling /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control/__init__.py to __init__.cpython-310.pyc
+byte-compiling /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control/grasp_controllers.py to grasp_controllers.cpython-310.pyc
+byte-compiling /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control/calculationFunctions.py to calculationFunctions.cpython-310.pyc
+byte-compiling /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control/grasp_analysis.py to grasp_analysis.cpython-310.pyc
+byte-compiling /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control/grasp_simulation_node.py to grasp_simulation_node.cpython-310.pyc
+byte-compiling /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control/grasp_planner.py to grasp_planner.cpython-310.pyc
+running install_data
+creating /home/ali/grasp_ws/install/grasp_simulation_control/share/ament_index
+creating /home/ali/grasp_ws/install/grasp_simulation_control/share/ament_index/resource_index
+creating /home/ali/grasp_ws/install/grasp_simulation_control/share/ament_index/resource_index/packages
+copying resource/grasp_simulation_control -> /home/ali/grasp_ws/install/grasp_simulation_control/share/ament_index/resource_index/packages
+copying package.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control
+creating /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/launch
+creating /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/config
+creating /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models
+error: can't copy 'models/allegro_hand': doesn't exist or not a regular file
