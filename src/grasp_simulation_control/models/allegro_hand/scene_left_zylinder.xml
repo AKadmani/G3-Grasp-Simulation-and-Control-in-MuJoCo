@@ -24,7 +24,9 @@
     <!-- Our three objects positioned close to the hand -->
     <body name="cylinder_object" pos="0.06 0 0">
       <freejoint/>
-      <geom name="cylinder" type="cylinder" size="0.04 0.1" rgba="0.2 0.7 0.3 1" friction="1.0 0.1 0.1" contype="1" conaffinity="1" solimp="0.02 1" solref="0.002 1"/>
+      <geom name="cylinder" type="cylinder" size="0.04 0.1" mass="0.2"
+        rgba="0.2 0.7 0.3 1" friction="1.0 0.1 0.1"
+        contype="1" conaffinity="1" solimp="0.02 1" solref="0.002 1"/>
     </body>
   </worldbody>
 </mujoco>
