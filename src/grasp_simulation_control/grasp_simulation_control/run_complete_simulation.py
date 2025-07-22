@@ -66,7 +66,7 @@ def run_complete_simulation(args):
         controller = PIDController(model, data)
         print("Using PID Controller")
     elif args.controller == 'impedance':
-        controller = ImpedanceController(model, data, k_p=2.0, k_d=0.2, k_f=1.5)
+        controller = ImpedanceController(model, data, k_p=20.0, k_d=0.5, k_f=2.0)
         print("Using Impedance Controller")
     elif args.controller == 'hybrid':
         controller = HybridController(model, data)
@@ -80,6 +80,18 @@ def run_complete_simulation(args):
     # Initialize grasp planner
     planner = GraspPlanner(model, data)
     
+    # ---- finger maps -----------------------------------------------------
+    # Replace the joint names with the exact ones in your XML
+    thumb_joint_names  = ["thj0", "thj1", "thj2", "thj3"]
+    index_joint_names  = ["ffj0", "ffj1", "ffj2", "ffj3"]
+    middle_joint_names = ["mfj0", "mfj1", "mfj2", "mfj3"]
+    ring_joint_names   = ["rfj0", "rfj1", "rfj2", "rfj3"]
+
+    thumb_idx   = [model.joint(name).id for name in thumb_joint_names]
+    other_idx   = [model.joint(name).id for name in
+                index_joint_names + middle_joint_names + ring_joint_names]
+    # ----------------------------------------------------------------------
+
     # Map grasp type
     grasp_map = {
         'power': GraspType.POWER_GRASP,
@@ -148,58 +160,109 @@ def run_complete_simulation(args):
                     target_pos = grasp_plan['grasp']
                     
             elif phase == 'grasp':
-                target_pos = grasp_plan['grasp']
+                # Use force control to close the hand
+                # Set target position to current joint positions to ignore position error
+                target_pos = controller.get_joint_positions()
+
+                # Desired grasping force (negative for closing)
+                F_grasp = -5.0  # Try increasing this value for a stronger grasp
+
+                # Apply force to all finger joints except the palm
+                tau_grasp = np.ones(controller.n_joints) * F_grasp
+
+                # Optionally, bias thumb for stronger pinch
+                # tau_grasp[thumb_idx - 1] *= 2.0
+
+                # If using HybridController, set all joints to force control
+                if isinstance(controller, HybridController):
+                    controller.set_force_controlled_joints(list(range(controller.n_joints)))
+                    control_signal = controller.compute_control(target_pos, tau_grasp)
+                else:
+                    control_signal = controller.compute_control(target_pos, tau_grasp)
+
+                controller.set_control(control_signal)
+
                 phase_timer += 1
 
                 # Check for stable grasp after some time
                 if phase_timer > 100:
                     contact_data = get_contact_data(model, data, args.object)
-                    if contact_data['num_contacts'] >= 3:
+                    if contact_data['num_contacts'] >= 6:
                         phase = 'lift'
                         phase_timer = 0
-                        # Record initial object height
                         obj_name = f"{args.object}_object"
                         obj_id = model.body(obj_name).id
                         lift_start_height = data.xpos[obj_id][2]
                         print("Grasp established, transitioning to LIFT phase")
                     else:
-                        print("Insufficient contacts for stable grasp, closing hand...")
-                        #here the hand has to close more to establish contact
-                        
-                        
-                        
+                        print("Insufficient contacts for stable grasp, increasing grasp force...")
+                        # Optionally, increase F_grasp for next iteration
             elif phase == 'lift':
-                target_pos = grasp_plan['grasp']
-                
-                # Move the hand upward by incrementing the palm's freejoint Z position
-                palm_body_id = model.body('palm').id
-                freejoint_addr = 0  # Assuming palm's freejoint is at the start of qpos
-                # Only move for the first 200 steps
-                if phase_timer <= 200:
-                    # qpos[2] is Z position for freejoint (x, y, z, qw, qx, qy, qz)
-                    z_pos += 0.0005  # Move up by 0.5mm per step
-                
-                    
+                # Ignore position error: set target_pos to current joint positions
+                target_pos = controller.get_joint_positions()
+
+                # Collect contact data
+                contact_data = get_contact_data(model, data, args.object)
+
+                # Initialize desired torque vector
+                tau_des = np.zeros(controller.n_joints)
+
+                if contact_data['num_contacts'] > 8:
+                    try:
+                        # Compute grasp matrix transpose and Jacobian
+                        Gt, J = calc.grasp_matrix_transposed_and_jacobian(
+                            contact_data['positions'],
+                            contact_data['orientations'],
+                            contact_data['joint_positions'],
+                            contact_data['joint_directions'],
+                            contact_data['object_position'],
+                            args.contact
+                        )
+
+                        # Desired upward wrench (force in +Z)
+                        F_lift = 20.0
+                        wrench_des = np.array([0.0, 0.0, F_lift, 0.0, 0.0, 0.0])
+
+                        # Map to joint torques
+                        tau_des = J.T @ wrench_des
+
+                        # Thumb press bias (stronger pinch)
+                        tau_des[thumb_idx] *= 5.0
+                        # tau_des = np.clip(tau_des, -5.0, 5.0)
+                        print("tau des:", tau_des)
+                        print("Current object height:", current_height)
+                        print("Lift start height:", lift_start_height)
+                        print("Number of contacts:", contact_data['num_contacts'])
+
+                    except Exception:
+                        pass
+
+                # --- Pure force control ---
+                if isinstance(controller, HybridController):
+                    controller.set_force_controlled_joints(list(range(controller.n_joints)))
+                    control_signal = controller.compute_control(target_pos, tau_des)
+                else:
+                    control_signal = controller.compute_control(target_pos, tau_des)
+
+                controller.set_control(control_signal)
+                # Compute and apply impedance control with force targets
+                # control_signal = controller.compute_control(target_pos, tau_des)
+                # controller.set_control(control_signal)
+
+                # Move palm upward (kinematic lift)
+                if phase_timer <= 250:  # longer lift window
+                    z_pos += 0.0006  # slightly faster upward motion
                 phase_timer += 1
-                
-                # Check if object has been lifted
-                obj_name = f"{args.object}_object"
-                obj_id = model.body(obj_name).id
+
+                # Check for successful lift
+                obj_id = model.body(f"{args.object}_object").id
                 current_height = data.xpos[obj_id][2]
-                
-                # --- begin slip detection & re-closure --- 
-                # if obj drops below 2 cm of start, close fingers further
-                if phase_timer > 10 and current_height < lift_start_height + 0.02:
-                    # incrementally tighten grasp
-                    target_pos = planner.grasp_more(target_pos, args.object, grasp_type)
-                    
-               
+
                 if phase_timer > 100 and current_height > lift_start_height + 0.05:
                     phase = 'hold'
                     phase_timer = 0
-                    print(f"Lift successful! Object raised {current_height - lift_start_height:.3f}m")
+                    print(f"Lift successful! Object raised {current_height - lift_start_height:.3f} m")
                     print("Transitioning to HOLD phase")
-                    
             else:  # hold
                 target_pos = grasp_plan['grasp']
                 # Maintain upward force
