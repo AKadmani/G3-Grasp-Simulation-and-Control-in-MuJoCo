@@ -182,7 +182,7 @@ class GraspSimulationNode(Node):
             self.grasp_quality = calc.compute_grasp_quality(self.grasp_matrix, self.contact_model)
             
             # Estimate required contact forces for current object weight
-            object_weight = np.array([0, 0, -1.0, 0, 0, 0])  # 1N downward
+            object_weight = np.array([0, 0, -2.0, 0, 0, 0])  # 2N downward
             self.contact_forces = calc.compute_contact_forces(self.grasp_matrix, object_weight)
             
     def get_contact_data(self):

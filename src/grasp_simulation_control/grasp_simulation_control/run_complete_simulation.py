@@ -66,7 +66,7 @@ def run_complete_simulation(args):
         controller = PIDController(model, data)
         print("Using PID Controller")
     elif args.controller == 'impedance':
-        controller = ImpedanceController(model, data, k_p=20.0, k_d=0.5, k_f=2.0)
+        controller = ImpedanceController(model, data, k_p=2.0, k_d=0.1, k_f=1.0)
         print("Using Impedance Controller")
     elif args.controller == 'hybrid':
         controller = HybridController(model, data)
@@ -122,6 +122,8 @@ def run_complete_simulation(args):
         freejoint_addr = 0  # Assuming palm's freejoint is at the start of qpos
         # Hold the hand at the origin before the lift phase
         z_pos = 0.0  # Initial Z position for the palm's freejoint
+        # Desired grasping force (negative for closing)
+        F_grasp = 0.20  # Try increasing this value for a stronger grasp
 
         print("Warming up simulation...")
         for _ in range(100):
@@ -163,12 +165,11 @@ def run_complete_simulation(args):
                 # Use force control to close the hand
                 # Set target position to current joint positions to ignore position error
                 target_pos = controller.get_joint_positions()
-
-                # Desired grasping force (negative for closing)
-                F_grasp = -5.0  # Try increasing this value for a stronger grasp
+                target_pos[[0,4,8,12,13]]= np.array([0.0, 0.0, 0.0, 1.2, 0.0])  # Ignore position error for palm and thumb
 
                 # Apply force to all finger joints except the palm
                 tau_grasp = np.ones(controller.n_joints) * F_grasp
+                tau_grasp[[0,4,8,12,13]]= np.array([0.0, 0.0, 0.0, 0.0, 0.0])
 
                 # Optionally, bias thumb for stronger pinch
                 # tau_grasp[thumb_idx - 1] *= 2.0
@@ -185,7 +186,7 @@ def run_complete_simulation(args):
                 phase_timer += 1
 
                 # Check for stable grasp after some time
-                if phase_timer > 100:
+                if phase_timer > 1000:
                     contact_data = get_contact_data(model, data, args.object)
                     if contact_data['num_contacts'] >= 6:
                         phase = 'lift'
@@ -194,18 +195,35 @@ def run_complete_simulation(args):
                         obj_id = model.body(obj_name).id
                         lift_start_height = data.xpos[obj_id][2]
                         print("Grasp established, transitioning to LIFT phase")
+                        target_pos = controller.get_joint_positions()+np.ones(controller.n_joints)*0.002
+
+                        # Nudge the object up in its local coordinate system to avoid being stuck in the floor
+                        # For MuJoCo, qpos of a freejoint: [x, y, z, qw, qx, qy, qz]
+                        # Find the qpos address for the object's freejoint
+                        # if model.jnt_type[model.body(obj_name).jntadr[0]] == mujoco.mjtJoint.mjJNT_FREE:
+                        #     qpos_addr = model.jnt_qposadr[model.body(obj_name).jntadr[0]]
+                        #     # Add a small offset to z (index 2)
+                        #     data.qpos[qpos_addr + 2] += 0.002  # 2mm upward
                     else:
                         print("Insufficient contacts for stable grasp, increasing grasp force...")
                         # Optionally, increase F_grasp for next iteration
+                        F_grasp += 0.002  # Increase grasp force for next iteration
+                        print("Applying increased grasp force:", F_grasp)
+                        tau_grasp = np.ones(controller.n_joints) * F_grasp
+                        # If using HybridController, set all joints to force control
+                        if isinstance(controller, HybridController):
+                            controller.set_force_controlled_joints(list(range(controller.n_joints)))
             elif phase == 'lift':
                 # Ignore position error: set target_pos to current joint positions
-                target_pos = controller.get_joint_positions()
+                #target_pos = controller.get_joint_positions()
+                target_pos[[0,4,8,12,13]]= np.array([0.0, 0.0, 0.0, 1.2, 0.0])  # Ignore position error for palm and thumb
 
                 # Collect contact data
                 contact_data = get_contact_data(model, data, args.object)
 
                 # Initialize desired torque vector
-                tau_des = np.zeros(controller.n_joints)
+                tau_des = np.ones(controller.n_joints)*0.2
+                tau_des[[0,4,8,12,13]]= np.array([0.0, 0.0, 0.0, 0.0, 0.0])  # Ignore palm and thumb
 
                 if contact_data['num_contacts'] > 8:
                     try:
@@ -235,6 +253,7 @@ def run_complete_simulation(args):
                         print("Number of contacts:", contact_data['num_contacts'])
 
                     except Exception:
+                        print("Grasp matrix calculation failed, using default torque")
                         pass
 
                 # --- Pure force control ---
@@ -250,8 +269,8 @@ def run_complete_simulation(args):
                 # controller.set_control(control_signal)
 
                 # Move palm upward (kinematic lift)
-                if phase_timer <= 250:  # longer lift window
-                    z_pos += 0.0006  # slightly faster upward motion
+                if phase_timer <= 2500:  # longer lift window
+                    z_pos += 0.00006  # slightly faster upward motion
                 phase_timer += 1
 
                 # Check for successful lift
@@ -281,15 +300,14 @@ def run_complete_simulation(args):
             target_forces = np.ones(controller.n_joints) * force_per_joint
 
             # Use force feedback only during lift
-            if phase == 'lift':
-                control_signal = controller.compute_control(target_pos, target_forces)
-            else:
+            # if phase == 'lift':
+            #     control_signal = controller.compute_control(target_pos, target_forces)
+            #     controller.set_control(control_signal)
+
+            
+            if phase == 'approach':
                 control_signal = controller.compute_control(target_pos, None)
-
-            controller.set_control(control_signal)
-
-            #control_signal = controller.compute_control(target_pos)
-            #controller.set_control(control_signal)
+                controller.set_control(control_signal)
             
             joint_error =  controller.get_joint_positions() - target_pos
             
@@ -336,7 +354,7 @@ def run_complete_simulation(args):
                 print("\nSimulation complete!")
                 break
                 
-            time.sleep(0.01)  # Small delay for visualization
+            time.sleep(0.002)  # Small delay for visualization
     
     # Generate report
     print("\nGenerating analysis report...")
@@ -426,23 +444,48 @@ def get_contact_data(model, data, object_type):
             continue
         elif object_type in str(geom1_name) or object_type in str(geom2_name):
             contact_positions.append(contact.pos.copy())
-            
+
             # Determine which geom is the finger
             if object_type in str(geom1_name):
                 finger_geom = contact.geom2
             else:
                 finger_geom = contact.geom1
-                
+
             body_id = model.geom_bodyid[finger_geom]
             rot_mat = data.xmat[body_id].reshape(3, 3)
             contact_orientations.append(rot_mat)
-            
-            # Simplified joint data
-            joint_pos = np.zeros((3, 4))
-            joint_dir = np.zeros((3, 4))
-            
-            joint_positions_all.append(joint_pos)
-            joint_directions_all.append(joint_dir)
+
+            # Find the joint(s) associated with this body (finger)
+            # We'll collect all joints whose body id matches or is a child of this body
+            joint_pos_list = []
+            joint_dir_list = []
+            for j in range(model.njnt):
+                # Only consider revolute/prismatic joints (not free joints)
+                if model.jnt_type[j] == mujoco.mjtJoint.mjJNT_FREE:
+                    continue
+                # Check if this joint belongs to the contacting body or its children
+                # (MuJoCo's joint-to-body mapping is direct, so we check for equality)
+                if model.jnt_bodyid[j] == body_id:
+                    # Joint position in world coordinates
+                    joint_qpos_addr = model.jnt_qposadr[j]
+                    joint_pos = data.qpos[joint_qpos_addr]
+                    # Joint axis in world coordinates
+                    joint_axis = model.jnt_axis[j]
+                    # Transform joint axis to world frame
+                    joint_axis_world = rot_mat @ joint_axis
+                    joint_pos_list.append(joint_pos)
+                    joint_dir_list.append(joint_axis_world)
+
+            # Pad to (3, 4) shape for compatibility (if less than 4 joints)
+            joint_pos_arr = np.zeros((3, 4))
+            joint_dir_arr = np.zeros((3, 4))
+            for idx in range(min(4, len(joint_pos_list))):
+                # For position, we can use the contact position as a proxy (since joint_pos is scalar for revolute)
+                joint_pos_arr[:, idx] = contact.pos.copy()
+                joint_dir_arr[:, idx] = joint_dir_list[idx] if idx < len(joint_dir_list) else np.zeros(3)
+
+            joint_positions_all.append(joint_pos_arr)
+            joint_directions_all.append(joint_dir_arr)
             
     return {
         'num_contacts': len(contact_positions),

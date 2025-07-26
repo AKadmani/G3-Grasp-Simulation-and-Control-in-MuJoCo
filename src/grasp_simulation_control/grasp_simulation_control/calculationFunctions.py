@@ -14,10 +14,10 @@ def contact_selection_matrix(contact_type):
     FF: Frictionless Finger - can transmit only normal force
     """
     if contact_type == "SF":  # Soft Finger
-        return np.array([[1, 0, 0, 0],
-                         [0, 1, 0, 0],
-                         [0, 0, 1, 0],
-                         [0, 0, 0, 1]])
+        return np.array([[1, 0, 0, 0, 0, 0],
+                         [0, 1, 0, 0, 0, 0],
+                         [0, 0, 1, 0, 0, 0],
+                         [0, 0, 0, 1, 0, 0]])
     elif contact_type == "HF":  # Hard Finger
         return np.array([[1, 0, 0],
                          [0, 1, 0],
@@ -78,15 +78,15 @@ def grasp_matrix_transposed_and_jacobian(contact_positions, contact_orientations
         lower = skew_symmetric(r_i) @ R_i
         
         # Combine upper and lower parts
-        W_i = np.vstack([upper, lower])
+        W_i = np.block([[upper,np.zeros((3,3))], [lower,upper]]) 
         
         # Apply contact model selection
-        G_i = W_i @ B
+        G_i =  B @ W_i
         
         # Insert into full G^T matrix
         start_col = i * wrench_dim
         end_col = start_col + wrench_dim
-        G_t[:, start_col:end_col] = G_i
+        G_t[:, start_col:end_col] = G_i.T
     
     # Calculate hand Jacobian J
     # J maps joint velocities to contact point velocities

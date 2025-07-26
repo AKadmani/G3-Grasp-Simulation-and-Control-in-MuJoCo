@@ -76,18 +76,45 @@ class GraspAnalyzer:
         
         # Generate plots
         self.plot_joint_trajectories(report_dir)
+        self.plot_joint_torques(report_dir)
         self.plot_contact_forces(report_dir)
         self.plot_grasp_quality_metrics(report_dir)
         self.plot_object_trajectory(report_dir)
         self.plot_controller_performance(report_dir)
+    def plot_joint_torques(self, output_dir):
+        """Plot joint torque trajectories over time, similar to joint positions"""
+        if not self.results['joint_torques']:
+            return
+
+        joint_torques = np.array(self.results['joint_torques'])
+        timestamps = np.array(self.results['timestamps'])
+        timestamps = timestamps - timestamps[0]  # Relative time
+
+        fig, axes = plt.subplots(4, 4, figsize=(16, 12))
+        axes = axes.flatten()
+
+        for i in range(16):
+            ax = axes[i]
+            ax.plot(timestamps, joint_torques[:, i], label='Torque')
+            ax.set_title(f'Joint {i}')
+            ax.set_xlabel('Time (s)')
+            ax.set_ylabel('Torque (Nm)')
+            ax.grid(True)
+            ymin = np.min(joint_torques[:, i])
+            ymax = np.max(joint_torques[:, i])
+            if ymin == ymax:
+                ymin -= 0.01
+                ymax += 0.01
+            ax.set_ylim([ymin, ymax])
+            ax.legend()
+
+        plt.tight_layout()
+        plt.savefig(os.path.join(output_dir, 'joint_torques.png'))
+        plt.show()
+        plt.close()
+
         
-        # Generate summary statistics
-        self.generate_summary_stats(report_dir)
-        
-        # Create presentation slides
-        self.create_presentation_slides(report_dir)
-        
-        return report_dir
+
         
     def plot_joint_trajectories(self, output_dir):
         """Plot joint position trajectories, joint errors, and planned positions"""
