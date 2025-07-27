@@ -124,7 +124,7 @@
   </asset>
 
   <worldbody>
-    <body name="palm" quat="-1 1 0 0" childclass="allegro_left">
+    <body name="palm" pos="0.1 0 0.1" quat="1 0 1 0" childclass="allegro_left">
       <freejoint/>
       <geom quat="1 -1 0 0" class="palm_visual" mesh="base_link_left"/>
       <geom class="palm_collision"/>

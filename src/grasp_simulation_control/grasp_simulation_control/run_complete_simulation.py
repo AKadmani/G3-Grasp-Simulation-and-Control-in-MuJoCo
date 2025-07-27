@@ -46,7 +46,7 @@ def run_complete_simulation(args):
     if args.object == 'cylinder':
         # Use the cylinder scene for cylinder object
         model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-                                  "models/allegro_hand/scene_left_zylinder.xml")
+                                  "models/allegro_hand/scene_left_cylinder_sideways.xml")
     elif args.object == 'box':
         # Use a box scene (not provided in this example, assuming similar structure)
         model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
@@ -66,7 +66,7 @@ def run_complete_simulation(args):
         controller = PIDController(model, data)
         print("Using PID Controller")
     elif args.controller == 'impedance':
-        controller = ImpedanceController(model, data, k_p=2.0, k_d=0.1, k_f=1.0)
+        controller = ImpedanceController(model, data, k_p=5.0, k_d=0.1, k_f=1.0)
         print("Using Impedance Controller")
     elif args.controller == 'hybrid':
         controller = HybridController(model, data)
@@ -114,7 +114,8 @@ def run_complete_simulation(args):
     phase = 'approach'
     phase_timer = 0
     lift_start_height = None
-    
+    #hand_qpos= [0.0, 0.0, 0.0, -1.0, 1.0, 0.0, 0.0]  # Initial palm position and orientation
+    hand_qpos= [0.1, 0.0, 0.08, 1.0, 0.0, 1.0, 0.0]
     print("\nStarting simulation...")
     
     with mujoco.viewer.launch_passive(model, data) as viewer:
@@ -123,29 +124,21 @@ def run_complete_simulation(args):
         # Hold the hand at the origin before the lift phase
         z_pos = 0.0  # Initial Z position for the palm's freejoint
         # Desired grasping force (negative for closing)
-        F_grasp = 0.20  # Try increasing this value for a stronger grasp
+        F_grasp = 1.20  # Try increasing this value for a stronger grasp
 
         print("Warming up simulation...")
         for _ in range(100):
             mujoco.mj_step(model, data)
             viewer.sync()
-            time.sleep(0.03)
-            data.qpos[freejoint_addr + 0] = 0.0  # x
-            data.qpos[freejoint_addr + 1] = 0.0  # y
-            data.qpos[freejoint_addr + 2] = 0.0  # z
-            data.qpos[freejoint_addr + 3] = -1.0  # qw (identity quaternion)
-            data.qpos[freejoint_addr + 4] = 1.0  # qx
-            data.qpos[freejoint_addr + 5] = 0.0  # qy
+            time.sleep(0.002)
+            data.qpos[freejoint_addr:freejoint_addr+7] = hand_qpos
              
-        freejoint_addr = 0
-        init_quat = data.qpos[freejoint_addr + 3 : freejoint_addr + 7].copy()
+        # init_quat = data.qpos[freejoint_addr + 3 : freejoint_addr + 7].copy()
         
         print("Beginning grasp sequence...")
         
         while viewer.is_running():
-            data.qpos[freejoint_addr + 0] = 0.0
-            data.qpos[freejoint_addr + 1] = 0.0
-            data.qpos[freejoint_addr + 3:freejoint_addr + 7] = init_quat # np.array([-1.0, 1.0, 0.0, 0.0])
+            data.qpos[freejoint_addr:freejoint_addr+7] = hand_qpos
             data.qvel[0:6] = 0.0
             
             # Control logic
@@ -157,6 +150,7 @@ def run_complete_simulation(args):
                 else:
                     phase = 'grasp'
                     phase_timer = 0
+                    analyzer.record_phase_change('grasp')
                     print("Transitioning to GRASP phase")
                     #time.sleep(5)  # Pause before grasping
                     target_pos = grasp_plan['grasp']
@@ -165,12 +159,12 @@ def run_complete_simulation(args):
                 # Use force control to close the hand
                 # Set target position to current joint positions to ignore position error
                 target_pos = controller.get_joint_positions()
-                target_pos[[0,4,8,12,13]]= np.array([0.0, 0.0, 0.0, 1.2, 0.0])  # Ignore position error for palm and thumb
-
+                target_pos[[0,4,8,12,13]]= np.array([0.0, 0.0, 0.0, 1.45, 0.0])  # Ignore position error for palm and thumb
+                target_pos[[2,3,6,7,10,11,14,15]] = np.array([0.8,0.5,0.8,0.5,0.8,0.5,0.5,0.5])  # Ignore position error for other fingers
                 # Apply force to all finger joints except the palm
                 tau_grasp = np.ones(controller.n_joints) * F_grasp
-                tau_grasp[[0,4,8,12,13]]= np.array([0.0, 0.0, 0.0, 0.0, 0.0])
-
+                tau_grasp[[0,4,8,12,13]]= np.array([0.0, 0.0, 0.0, 0.5, -0.5])
+                tau_grasp[[2,3,6,7,10,11,14,15]] = np.array([0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0])
                 # Optionally, bias thumb for stronger pinch
                 # tau_grasp[thumb_idx - 1] *= 2.0
 
@@ -186,28 +180,21 @@ def run_complete_simulation(args):
                 phase_timer += 1
 
                 # Check for stable grasp after some time
-                if phase_timer > 1000:
+                if phase_timer > 50:
                     contact_data = get_contact_data(model, data, args.object)
                     if contact_data['num_contacts'] >= 6:
                         phase = 'lift'
                         phase_timer = 0
+                        analyzer.record_phase_change('lift')
                         obj_name = f"{args.object}_object"
                         obj_id = model.body(obj_name).id
                         lift_start_height = data.xpos[obj_id][2]
                         print("Grasp established, transitioning to LIFT phase")
-                        target_pos = controller.get_joint_positions()+np.ones(controller.n_joints)*0.002
-
-                        # Nudge the object up in its local coordinate system to avoid being stuck in the floor
-                        # For MuJoCo, qpos of a freejoint: [x, y, z, qw, qx, qy, qz]
-                        # Find the qpos address for the object's freejoint
-                        # if model.jnt_type[model.body(obj_name).jntadr[0]] == mujoco.mjtJoint.mjJNT_FREE:
-                        #     qpos_addr = model.jnt_qposadr[model.body(obj_name).jntadr[0]]
-                        #     # Add a small offset to z (index 2)
-                        #     data.qpos[qpos_addr + 2] += 0.002  # 2mm upward
+                        target_pos = controller.get_joint_positions()+np.ones(controller.n_joints)*0.005
                     else:
                         print("Insufficient contacts for stable grasp, increasing grasp force...")
                         # Optionally, increase F_grasp for next iteration
-                        F_grasp += 0.002  # Increase grasp force for next iteration
+                        F_grasp += 0.0002  # Increase grasp force for next iteration
                         print("Applying increased grasp force:", F_grasp)
                         tau_grasp = np.ones(controller.n_joints) * F_grasp
                         # If using HybridController, set all joints to force control
@@ -215,16 +202,20 @@ def run_complete_simulation(args):
                             controller.set_force_controlled_joints(list(range(controller.n_joints)))
             elif phase == 'lift':
                 # Ignore position error: set target_pos to current joint positions
-                #target_pos = controller.get_joint_positions()
-                target_pos[[0,4,8,12,13]]= np.array([0.0, 0.0, 0.0, 1.2, 0.0])  # Ignore position error for palm and thumb
-
+                # target_pos = controller.get_joint_positions()
+                target_pos[[0,4,8,12,13]]= np.array([0.0, 0.0, 0.0, 1.45, 0.0])  # Ignore position error for palm and thumb
+                # target_pos[[2,3,6,7,10,11,14,15]] = np.array([0.8,0.5,0.8,0.5,0.8,0.5,0.5,0.5])
+                
                 # Collect contact data
                 contact_data = get_contact_data(model, data, args.object)
 
                 # Initialize desired torque vector
-                tau_des = np.ones(controller.n_joints)*0.2
-                tau_des[[0,4,8,12,13]]= np.array([0.0, 0.0, 0.0, 0.0, 0.0])  # Ignore palm and thumb
-
+                tau_des = np.ones(controller.n_joints)*F_grasp
+                tau_des[[0,4,8,12,13]]= np.array([0.0, 0.0, 0.0, 0.5, -0.5])  # Ignore palm and thumb
+                finger_factor=[1.0, 0.7, 0.2]
+                for i in range(3):
+                    tau_des[i*4:(i+1)*4] = tau_des[i*4:(i+1)*4]*[0.0, 1.0, 1.0, 1.0]*finger_factor[i]
+                #tau_des[[2,3,6,7,10,11,14,15]] = np.array([0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0])
                 if contact_data['num_contacts'] > 8:
                     try:
                         # Compute grasp matrix transpose and Jacobian
@@ -269,24 +260,66 @@ def run_complete_simulation(args):
                 # controller.set_control(control_signal)
 
                 # Move palm upward (kinematic lift)
-                if phase_timer <= 2500:  # longer lift window
-                    z_pos += 0.00006  # slightly faster upward motion
+                if phase_timer <= 3000:  # longer lift window
+                    hand_qpos[2] += 0.00006  # slightly faster upward motion
                 phase_timer += 1
+
+                # if phase_timer == 1:
+                #         #Nudge the object up in its local coordinate system to avoid being stuck in the floor
+                #         # For MuJoCo, qpos of a freejoint: [x, y, z, qw, qx, qy, qz]
+                #         # Find the qpos address for the object's freejoint
+                #     if model.jnt_type[model.body(obj_name).jntadr[0]] == mujoco.mjtJoint.mjJNT_FREE:
+                #         qpos_addr = model.jnt_qposadr[model.body(obj_name).jntadr[0]]
+                #         # Add a small offset to z (index 2)
+                #         data.qpos[qpos_addr + 2] += 0.002  # 2mm upward
 
                 # Check for successful lift
                 obj_id = model.body(f"{args.object}_object").id
                 current_height = data.xpos[obj_id][2]
 
-                if phase_timer > 100 and current_height > lift_start_height + 0.05:
+                if phase_timer > 3000:
                     phase = 'hold'
                     phase_timer = 0
+                    analyzer.record_phase_change('hold')
                     print(f"Lift successful! Object raised {current_height - lift_start_height:.3f} m")
                     print("Transitioning to HOLD phase")
-            else:  # hold
-                target_pos = grasp_plan['grasp']
-                # Maintain upward force
-                base_id = model.body('palm').id
-                data.xfrc_applied[base_id, 2] = 3.0
+                    
+            else:  # hold; 
+                
+
+                
+                if phase_timer < 500:
+                    target_pos[[0,4,8,12,13]]= np.array([0.0, 0.0, 0.0, 1.45, 0.0])  # Ignore position error for palm and thumb
+                    # target_pos[[2,3,6,7,10,11,14,15]] = np.array([0.8,0.5,0.8,0.5,0.8,0.5,0.5,0.5])
+                    
+                    # Collect contact data
+                    contact_data = get_contact_data(model, data, args.object)
+
+                    # Initialize desired torque vector
+                    tau_des = np.ones(controller.n_joints)*F_grasp
+                    tau_des[[0,4,8,12,13]]= np.array([0.0, 0.0, 0.0, 0.5, -0.5])  # Ignore palm and thumb
+                    finger_factor=[1.0, 0.7, 0.2]
+                    for i in range(3):
+                        tau_des[i*4:(i+1)*4] = tau_des[i*4:(i+1)*4]*[0.0, 1.0, 1.0, 1.0]*finger_factor[i]
+                    #tau_des[[2,3,6,7,10,11,14,15]] = np.array([0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0])
+                else:
+                    hand_qpos[3:7] += np.array([1.0, -1.0, 1.0, -1.0])*0.001  # rotate palm into upright position
+                    tau_des = np.ones(controller.n_joints)*F_grasp+1.4
+                    tau_des[[0,4,8,12,13]]= np.array([0.0, 0.0, 0.0, 0.5, -0.5])  # Ignore palm and thumb
+                    finger_factor=[1.0, 0.7, 0.2]
+                    for i in range(3):
+                        tau_des[i*4:(i+1)*4] = tau_des[i*4:(i+1)*4]*[0.0, 1.0, 1.0, 1.0]*finger_factor[i]
+                # --- Pure force control ---
+                if isinstance(controller, HybridController):
+                    controller.set_force_controlled_joints(list(range(controller.n_joints)))
+                    control_signal = controller.compute_control(target_pos, tau_des)
+                else:
+                    control_signal = controller.compute_control(target_pos, tau_des)
+
+                controller.set_control(control_signal)
+
+                phase_timer += 1
+
             
             # Compute and apply control
             # Get the object’s body ID
@@ -310,11 +343,8 @@ def run_complete_simulation(args):
                 controller.set_control(control_signal)
             
             joint_error =  controller.get_joint_positions() - target_pos
-            
-            data.qpos[freejoint_addr + 0] = 0.0  # x
-            data.qpos[freejoint_addr + 1] = 0.0  # y
-            data.qpos[freejoint_addr + 2] = z_pos  # z
-           
+
+
             # Step simulation
             mujoco.mj_step(model, data)
             viewer.sync()
@@ -350,7 +380,7 @@ def run_complete_simulation(args):
             analyzer.record_state(controller, grasp_quality, joint_error, target_pos)
             
             # Check for termination
-            if phase == 'hold' and phase_timer > 100:
+            if phase == 'hold' and phase_timer > 3500:
                 print("\nSimulation complete!")
                 break
                 
@@ -440,7 +470,7 @@ def get_contact_data(model, data, object_type):
         # Check if contact involves the object
         geom1_name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_GEOM, contact.geom1)
         geom2_name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_GEOM, contact.geom2)
-        if geom1_name == "floor" or geom2_name == "floor":
+        if geom1_name == ("floor" or "floor_obj") or geom2_name == ("floor" or "floor_obj"):
             continue
         elif object_type in str(geom1_name) or object_type in str(geom2_name):
             contact_positions.append(contact.pos.copy())

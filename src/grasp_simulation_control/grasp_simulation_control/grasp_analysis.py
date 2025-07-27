@@ -25,6 +25,11 @@ class GraspAnalyzer:
             'object_pose': [],
             'controller_errors': []
         }
+        self.phase_change_times = []  # List of (timestamp, phase_name)
+    def record_phase_change(self, phase_name):
+        """Record the timestamp and phase name when a phase change occurs."""
+        if self.results['timestamps']:
+            self.phase_change_times.append((self.results['timestamps'][-1], phase_name))
         
     def record_state(self, controller, grasp_quality=None, joint_error=None, planned_position=None):
         """Record current state for analysis, now with joint error and planned position"""
@@ -117,21 +122,32 @@ class GraspAnalyzer:
 
         
     def plot_joint_trajectories(self, output_dir):
-        """Plot joint position trajectories, joint errors, and planned positions"""
+        """Plot joint position trajectories, joint errors, and planned positions, with dots at phase changes"""
         if not self.results['joint_positions']:
             return
-            
+
         joint_positions = np.array(self.results['joint_positions'])
         timestamps = np.array(self.results['timestamps'])
         timestamps = timestamps - timestamps[0]  # Relative time
-        
+
         fig, axes = plt.subplots(4, 4, figsize=(16, 12))
         axes = axes.flatten()
-        
+
+        # Prepare phase change dots
+        phase_times = []
+        phase_labels = []
+        for t, name in self.phase_change_times:
+            phase_times.append(t - self.results['timestamps'][0])
+            phase_labels.append(name)
+
         # Plot joint positions
         for i in range(16):
             ax = axes[i]
             ax.plot(timestamps, joint_positions[:, i], label='Position')
+            # Plot dots at phase changes
+            if phase_times:
+                yvals = np.interp(phase_times, timestamps, joint_positions[:, i])
+                ax.scatter(phase_times, yvals, c='red', s=40, zorder=5, label='Phase change' if i == 0 else None)
             ax.set_title(f'Joint {i}')
             ax.set_xlabel('Time (s)')
             ax.set_ylabel('Position (rad)')
@@ -156,8 +172,7 @@ class GraspAnalyzer:
             allegro_lower = [-0.47, -0.196, -0.174, -0.227] * 3 + [0.263, -0.105, -0.189, -0.162]
             allegro_upper = [0.47, 1.61, 1.709, 1.618] * 3 + [1.396, 1.163, 1.644, 1.719]
             ax.set_ylim([allegro_lower[i]-0.1, allegro_upper[i]+0.1])
-        
-            
+
         plt.tight_layout()
         plt.savefig(os.path.join(output_dir, 'joint_trajectories.png'))
         plt.show()

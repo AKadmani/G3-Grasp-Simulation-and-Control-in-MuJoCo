@@ -44,7 +44,7 @@ class GraspPlanner:
         """Precision grasp: thumb and index finger"""
         config = np.zeros(16)
         # Index finger
-        config[0:4] = [0.2, 0.4, 0.3, 0.2]
+        config[0:4] = [0.0, 0.4, 0.3, 0.2]
         # Thumb
         config[12:16] = [0.8, 0.3, 0.3, 0.2]
         # Other fingers slightly bent back
@@ -79,7 +79,7 @@ class GraspPlanner:
         for i in range(3):
             config[i*4:(i+1)*4] = [0.0, 0.7, 0.8, 0.5]
         # Thumb opposes
-        config[12:16] = [1.3, 0, 0.5, 0.5]
+        config[12:16] = [1.45, 0, 0.0, 0.0]
         return config
         
     def plan_grasp(self, object_type, grasp_type, close_further=False):
@@ -134,7 +134,7 @@ class GraspPlanner:
         if object_type == 'cylinder' and grasp_type == GraspType.CYLINDRICAL_GRASP:
             # Increase finger curvature for cylinder
             for i in range(3):
-                grasp[i*4+1:i*4+4] *= 1.2
+                grasp[i*4+1:i*4+4] *= 1.0
         elif object_type == 'sphere' and grasp_type == GraspType.SPHERICAL_GRASP:
             # Uniform curvature for sphere
             for i in range(4):
