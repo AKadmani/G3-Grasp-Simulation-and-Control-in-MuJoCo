@@ -5,7 +5,7 @@ This project implements a complete grasp simulation pipeline using the Allegro h
 ## Project Structure
 
 ```
-grasp_ws/
+G3-Grasp-Simulation-and-Control-in MuJoCo/
 └── src/
     └── grasp_simulation_control/
         ├── grasp_simulation_control/
@@ -37,56 +37,24 @@ grasp_ws/
    pip install numpy matplotlib mujoco
    ```
 
-## Setup Instructions
 
-1. **Download Allegro Hand Model**:
-   ```bash
-   cd ~/grasp_ws/src/grasp_simulation_control
-   mkdir -p models/allegro_hand
-   cd models/allegro_hand
-   
-   # Clone the mujoco_menagerie repository temporarily
-   git clone https://github.com/google-deepmind/mujoco_menagerie.git temp_menagerie
-   
-   # Copy Allegro hand files
-   cp -r temp_menagerie/wonik_allegro/* .
-   
-   # Clean up
-   rm -rf temp_menagerie
-   ```
-
-2. **Create the scene file**:
-   Copy the `scene_grasp.xml` content from the artifacts above into:
-   ```
-   ~/grasp_ws/src/grasp_simulation_control/models/allegro_hand/scene_grasp.xml
-   ```
-
-3. **Copy all Python files**:
-   Place all the Python files from the artifacts above in their respective locations.
-
-4. **Build the ROS2 package**:
-   ```bash
-   cd ~/grasp_ws
-   colcon build --packages-select grasp_simulation_control
-   source install/setup.bash
-   ```
 
 ## Running the Simulation
 
-### Option 1: Standalone Simulation (Recommended for testing)
+### Option 1: Standalone Simulation, this is how the results were generated
 
 ```bash
-cd ~/grasp_ws/src/grasp_simulation_control/grasp_simulation_control
+cd ~/src/grasp_simulation_control/grasp_simulation_control
 python3 run_complete_simulation.py --controller impedance --object cylinder --grasp cylindrical --contact SF
 ```
 
-Available options:
+Available options, only the defaults are tested:
 - `--controller`: pid, impedance, hybrid, adaptive
 - `--object`: cylinder, box, sphere
 - `--grasp`: power, precision, lateral, spherical, cylindrical
 - `--contact`: SF (Soft Finger), HF (Hard Finger), FF (Frictionless)
 
-### Option 2: ROS2 Node
+### Option 2: ROS2 Node (untested)
 
 ```bash
 # Terminal 1
@@ -134,6 +102,7 @@ The simulation will:
 
 The report includes:
 - Joint trajectory plots
+- Joint torque plots
 - Contact force evolution
 - Grasp quality metrics (force closure, singular values)
 - Object trajectory
@@ -201,8 +170,6 @@ Reports are automatically generated after each simulation run and saved in:
 reports/grasp_report_YYYYMMDD_HHMMSS/
 ```
 
-The report includes all necessary plots and analysis for your project submission.
-
 ## Code Explanation
 
 ### Grasp Matrix and Jacobian
@@ -223,29 +190,8 @@ Impedance control is preferred for grasping because:
 3. Stable interaction with unknown environments
 4. Handles disturbances through mechanical impedance
 
-## Authors
-
 Developed for the Grasp Simulation and Control course project.
 
 ## License
 
 MIT License
-
-
-This project currently uses `mujoco.py` (install via `pip install mujoco`).
-
----
-
-## Files Overview
-
-- **mujoco_test.py**  
-  Opens MuJoCo with the MuJoCo viewer using the Allegro left hand scene, also calculates **G_t** and **J**
-
-- **calculationFunctions.py**  
-  Contains functions to calculate the grasp matrix **G** and Jacobian **J**
-
----
-
-## Next Steps
-
-- Create a MuJoCo scene where an object is grasped  
