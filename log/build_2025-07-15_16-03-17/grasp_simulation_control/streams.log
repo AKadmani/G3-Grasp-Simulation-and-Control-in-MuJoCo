@@ -1,0 +1,26 @@
+[1.229s] Invoking command in '/home/ali/grasp_ws/build/grasp_simulation_control': NX_CONNECTION=138.246.3.10 51344 10.172.0.2 4000 PYTHONPATH=/home/ali/grasp_ws/build/grasp_simulation_control/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ali/grasp_ws/build/grasp_simulation_control/build --no-deps symlink_data --force
+[1.720s] running develop
+[2.021s] running egg_info
+[2.021s] writing grasp_simulation_control.egg-info/PKG-INFO
+[2.022s] writing dependency_links to grasp_simulation_control.egg-info/dependency_links.txt
+[2.022s] writing entry points to grasp_simulation_control.egg-info/entry_points.txt
+[2.022s] writing requirements to grasp_simulation_control.egg-info/requires.txt
+[2.022s] writing top-level names to grasp_simulation_control.egg-info/top_level.txt
+[2.025s] reading manifest file 'grasp_simulation_control.egg-info/SOURCES.txt'
+[2.027s] writing manifest file 'grasp_simulation_control.egg-info/SOURCES.txt'
+[2.030s] running build_ext
+[2.030s] Creating /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp-simulation-control.egg-link (link to .)
+[2.032s] Installing grasp_simulation_node.py script to /home/ali/grasp_ws/install/grasp_simulation_control/lib/grasp_simulation_control
+[2.032s] Installing run_complete_simulation script to /home/ali/grasp_ws/install/grasp_simulation_control/lib/grasp_simulation_control
+[2.033s] 
+[2.033s] Installed /home/ali/grasp_ws/build/grasp_simulation_control
+[2.033s] running symlink_data
+[2.033s] symbolically linking /home/ali/grasp_ws/build/grasp_simulation_control/resource/grasp_simulation_control -> /home/ali/grasp_ws/install/grasp_simulation_control/share/ament_index/resource_index/packages
+[2.034s] symbolically linking /home/ali/grasp_ws/build/grasp_simulation_control/package.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control
+[2.034s] symbolically linking /home/ali/grasp_ws/build/grasp_simulation_control/launch/grasp_simulation.launch.py -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/launch
+[2.036s] symbolically linking /home/ali/grasp_ws/build/grasp_simulation_control/models/allegro_hand/left_hand.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand
+[2.036s] symbolically linking /home/ali/grasp_ws/build/grasp_simulation_control/models/allegro_hand/scene_grasp.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand
+[2.036s] symbolically linking /home/ali/grasp_ws/build/grasp_simulation_control/models/allegro_hand/scene_right.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand
+[2.036s] symbolically linking /home/ali/grasp_ws/build/grasp_simulation_control/models/allegro_hand/right_hand.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand
+[2.036s] symbolically linking /home/ali/grasp_ws/build/grasp_simulation_control/models/allegro_hand/scene_left.xml -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/models/allegro_hand
+[2.089s] Invoked command in '/home/ali/grasp_ws/build/grasp_simulation_control' returned '0': NX_CONNECTION=138.246.3.10 51344 10.172.0.2 4000 PYTHONPATH=/home/ali/grasp_ws/build/grasp_simulation_control/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/ali/grasp_ws/build/grasp_simulation_control/build --no-deps symlink_data --force

@@ -1,0 +1,24 @@
+<mujoco>
+    <include file="scene_left.xml"/>
+    
+    <worldbody>
+        <!-- Add a reference marker at origin -->
+        <body name="origin_marker" pos="0 0 0">
+            <geom type="sphere" size="0.05" rgba="1 0 0 1"/>
+        </body>
+        
+        <!-- Add the objects higher up -->
+        <body name="cylinder_object" pos="0 0 0.5">
+            <freejoint/>
+            <geom name="cylinder" type="cylinder" size="0.03 0.08" rgba="0.2 0.7 0.3 1"/>
+        </body>
+    </worldbody>
+    
+    <!-- Set camera to see more of the scene -->
+    <visual>
+        <global offwidth="1920" offheight="1080"/>
+        <map znear="0.001" zfar="50"/>
+    </visual>
+    
+    <statistic extent="3" center="0 0 0.5"/>
+</mujoco>

@@ -1,0 +1,21 @@
+running egg_info
+writing ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/PKG-INFO
+writing dependency_links to ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/dependency_links.txt
+writing entry points to ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/entry_points.txt
+writing requirements to ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/requires.txt
+writing top-level names to ../../build/grasp_simulation_control/grasp_simulation_control.egg-info/top_level.txt
+reading manifest file '../../build/grasp_simulation_control/grasp_simulation_control.egg-info/SOURCES.txt'
+writing manifest file '../../build/grasp_simulation_control/grasp_simulation_control.egg-info/SOURCES.txt'
+running build
+running build_py
+running install
+running install_lib
+running install_data
+copying launch/grasp_simulation.launch.py -> /home/ali/grasp_ws/install/grasp_simulation_control/share/grasp_simulation_control/launch
+running install_egg_info
+removing '/home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control-0.1.0-py3.10.egg-info' (and everything under it)
+Copying ../../build/grasp_simulation_control/grasp_simulation_control.egg-info to /home/ali/grasp_ws/install/grasp_simulation_control/lib/python3.10/site-packages/grasp_simulation_control-0.1.0-py3.10.egg-info
+running install_scripts
+Installing grasp_simulation_node script to /home/ali/grasp_ws/install/grasp_simulation_control/lib/grasp_simulation_control
+Installing run_simulation script to /home/ali/grasp_ws/install/grasp_simulation_control/lib/grasp_simulation_control
+writing list of installed files to '/home/ali/grasp_ws/build/grasp_simulation_control/install.log'
